@@ -1,0 +1,6 @@
+Background: gray-900
+Card/Container: gray-800
+Text: gray-500
+Text Hover: gray-600
+Button: blue-600/50
+Button Hover: blue-600
