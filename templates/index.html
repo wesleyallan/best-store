@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp,container-queries"></script>
+  <title>BESTEC - Página Inicial</title>
+</head>
+
+<body class="relative bg-gray-900 flex flex-col items-center gap-4 m-6">
+  <span class="block absolute w-full h-[2px] bg-gray-800 top-6 rounded-md"></span>
+  <nav class="bg-gray-800 w-fit rounded-3xl flex justify-center items-center overflow-hidden z-10">
+    <a href="{{url_for("index")}}"
+      class="font-medium text-gray-400 hover:text-gray-300 px-4 py-3 hover:bg-gray-600 rounded-md">Página Inicial</a>
+    <a href="{{url_for("login")}}"
+      class="font-medium text-gray-400 hover:text-gray-300 px-4 py-3 hover:bg-gray-600 rounded-md">Categorias</a>
+    <a href="{{url_for("login")}}"
+      class="font-medium text-gray-400 hover:text-gray-300 px-4 py-3 hover:bg-gray-600 rounded-md">Minha Conta</a>
+  </nav>
+  <main class="p-6 bg-gray-800 w-full rounded-md overlfow-hidden shadow">
+    <h1 class="font-bold text-center text-gray-400">Bem vindo a BESTEC</h1>
+    <p class=" text-center text-gray-400">Seja bem vindo a melhor loja de compras e vendas de eletronicos do Brasil</p>
+  </main>
+</body>
+
+</html>
