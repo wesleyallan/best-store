@@ -78,6 +78,21 @@ class Favorito(db.Model):
         self.id_usuario = id_usuario
         self.id_anuncio = id_anuncio
 
+class Pergunta(db.Model):
+    __tablename__ = "pergunta"
+    id = db.Column(db.Integer, primary_key=True)
+    id_anuncio = db.Column(db.Integer, db.ForeignKey("anuncio.id"), nullable=False)
+    id_usuario = db.Column(db.Integer, db.ForeignKey("usuario.id"), nullable=False)
+    pergunta = db.Column(db.Text, nullable=False)
+
+    anuncio = db.relationship('Anuncio', backref='perguntas')
+    usuario = db.relationship('Usuario', backref='perguntas')
+
+    def __init__(self, id_anuncio, id_usuario, pergunta):
+        self.id_anuncio = id_anuncio
+        self.id_usuario = id_usuario
+        self.pergunta = pergunta
+
 @app.route('/')
 def index():
   return render_template("index.html")
