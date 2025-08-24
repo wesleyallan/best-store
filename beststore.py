@@ -110,6 +110,21 @@ class Compra(db.Model):
         if dt_hora:
             self.dt_hora = dt_hora
 
+class CompraAnuncio(db.Model):
+    __tablename__ = "compra_anuncio"
+    id = db.Column(db.Integer, primary_key=True)
+    id_compra = db.Column(db.Integer, db.ForeignKey("compra.id"), nullable=False)
+    id_anuncio = db.Column(db.Integer, db.ForeignKey("anuncio.id"), nullable=False)
+    quantidade = db.Column(db.Integer, nullable=False, default=1)
+
+    compra = db.relationship('Compra', backref='itens')
+    anuncio = db.relationship('Anuncio', backref='compras_anuncio')
+
+    def __init__(self, id_compra, id_anuncio, quantidade=1):
+        self.id_compra = id_compra
+        self.id_anuncio = id_anuncio
+        self.quantidade = quantidade
+
 @app.route('/')
 def index():
   return render_template("index.html")
