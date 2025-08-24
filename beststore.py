@@ -65,6 +65,19 @@ class Anuncio(db.Model):
         self.id_categoria = id_categoria
         self.id_usuario = id_usuario
 
+class Favorito(db.Model):
+    __tablename__ = "favorito"
+    id = db.Column(db.Integer, primary_key=True)
+    id_usuario = db.Column(db.Integer, db.ForeignKey("usuario.id"), nullable=False)
+    id_anuncio = db.Column(db.Integer, db.ForeignKey("anuncio.id"), nullable=False)
+
+    usuario = db.relationship('Usuario', backref='favoritos')
+    anuncio = db.relationship('Anuncio', backref='favoritos')
+
+    def __init__(self, id_usuario, id_anuncio):
+        self.id_usuario = id_usuario
+        self.id_anuncio = id_anuncio
+
 @app.route('/')
 def index():
   return render_template("index.html")
