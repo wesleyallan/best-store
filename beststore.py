@@ -93,6 +93,23 @@ class Pergunta(db.Model):
         self.id_usuario = id_usuario
         self.pergunta = pergunta
 
+class Compra(db.Model):
+    __tablename__ = "compra"
+    id = db.Column(db.Integer, primary_key=True)
+    id_usuario = db.Column(db.Integer, db.ForeignKey("usuario.id"), nullable=False)
+    mt_pagamento = db.Column(db.String(50))
+    frete = db.Column(db.Float)
+    dt_hora = db.Column(db.DateTime, default=datetime.utcnow)
+
+    usuario = db.relationship('Usuario', backref='compras')
+
+    def __init__(self, id_usuario, mt_pagamento=None, frete=None, dt_hora=None):
+        self.id_usuario = id_usuario
+        self.mt_pagamento = mt_pagamento
+        self.frete = frete
+        if dt_hora:
+            self.dt_hora = dt_hora
+
 @app.route('/')
 def index():
   return render_template("index.html")
