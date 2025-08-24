@@ -1,17 +1,15 @@
-from flask import Flask, make_response
-from flask import render_template
-from flask import request
+from flask import Flask, make_response, render_template, request, url_for, redirect
 from flask_sqlalchemy import SQLAlchemy
-from markupsafe import escape
 from dotenv import load_dotenv
-import os
 from datetime import datetime
+import os
 
 load_dotenv('.env.development')
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
+database_uri = os.getenv('DATABASE_URL')
+app.config['SQLALCHEMY_DATABASE_URI'] = database_uri
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
@@ -137,13 +135,131 @@ def login():
   else:
     return render_template("login.html")
 
+@app.route("/categoria")
+def categoria():
+    return render_template('categoria.html', categorias=Categoria.query.all(), titulo='Categoria')
+
+@app.route("/categoria/nova", methods=['POST'])
+def novacategoria():
+    categoria = Categoria(request.form.get('nome'), request.form.get('desc'))
+    db.session.add(categoria)
+    db.session.commit()
+    return redirect(url_for('categoria'))
+
+@app.route("/usuario")
+def usuario():
+    return render_template('usuario.html', usuarios=Usuario.query.all(), titulo='Usuário')
+
+@app.route("/usuario/novo", methods=['POST'])
+def novousuario():
+    dt_nascimento = None
+    if request.form.get('dt_nascimento'):
+        try:
+            dt_nascimento = datetime.strptime(request.form.get('dt_nascimento'), '%Y-%m-%d').date()
+        except ValueError:
+            pass
+
+    usuario = Usuario(
+        nome=request.form.get('nome'),
+        email=request.form.get('email'),
+        cpf=request.form.get('cpf'),
+        dt_nascimento=dt_nascimento,
+        telefone=request.form.get('telefone'),
+        rua=request.form.get('rua'),
+        cidade=request.form.get('cidade'),
+        bairro=request.form.get('bairro'),
+        numero=request.form.get('numero')
+    )
+    db.session.add(usuario)
+    db.session.commit()
+    return redirect(url_for('usuario'))
+
+@app.route("/anuncio")
+def anuncio():
+    return render_template('anuncio.html',
+                         anuncios=Anuncio.query.all(),
+                         categorias=Categoria.query.all(),
+                         usuarios=Usuario.query.all(),
+                         titulo='Anúncio')
+
+@app.route("/anuncio/novo", methods=['POST'])
+def novoanuncio():
+    anuncio = Anuncio(
+        anunciocol=request.form.get('anunciocol'),
+        id_categoria=request.form.get('id_categoria'),
+        id_usuario=request.form.get('id_usuario')
+    )
+    db.session.add(anuncio)
+    db.session.commit()
+    return redirect(url_for('anuncio'))
+
+@app.route("/pergunta")
+@app.route("/pergunta/<int:id_anuncio>")
+def pergunta(id_anuncio=None):
+    anuncio = None
+    if id_anuncio:
+        anuncio = Anuncio.query.get_or_404(id_anuncio)
+
+    return render_template('pergunta.html',
+                         anuncio=anuncio,
+                         anuncios=Anuncio.query.all(),
+                         usuarios=Usuario.query.all())
+
+@app.errorhandler(404)
+def paginanaoencontrada(error):
+    return render_template('404.html')
+
+@app.route("/pergunta/nova", methods=['POST'])
+def novapergunta():
+    pergunta = Pergunta(
+        id_anuncio=request.form.get('id_anuncio'),
+        id_usuario=request.form.get('id_usuario'),
+        pergunta=request.form.get('pergunta')
+    )
+    db.session.add(pergunta)
+    db.session.commit()
+
+    return redirect(url_for('pergunta', id_anuncio=request.form.get('id_anuncio')))
+
+@app.route("/favoritar/<int:id_anuncio>")
+def favoritar(id_anuncio):
+    usuario_id = 1
+    favorito_existe = Favorito.query.filter_by(id_usuario=usuario_id, id_anuncio=id_anuncio).first()
+
+    if not favorito_existe:
+        favorito = Favorito(id_usuario=usuario_id, id_anuncio=id_anuncio)
+        db.session.add(favorito)
+        db.session.commit()
+
+    return redirect(url_for('anuncio'))
+
+@app.route("/favoritos")
+def favoritos():
+    usuario_id = 1
+    favoritos = Favorito.query.filter_by(id_usuario=usuario_id).all()
+    return render_template('favoritos.html', favoritos=favoritos)
+
+@app.route("/comprar/<int:id_anuncio>")
+def comprar(id_anuncio):
+    usuario_id = 1
+
+    compra = Compra(id_usuario=usuario_id, mt_pagamento="Cartão", frete=10.00)
+    db.session.add(compra)
+    db.session.flush()
+
+    compra_anuncio = CompraAnuncio(id_compra=compra.id, id_anuncio=id_anuncio, quantidade=1)
+    db.session.add(compra_anuncio)
+    db.session.commit()
+
+    return f"<h4>Compra realizada com sucesso! ID: {compra.id}</h4>"
+
 @app.route('/user')
 @app.route('/user/<username>')
 def user(username):
+  response = make_response(render_template("user.html", username=username))
   response.set_cookie("username", username)
-  return render_template("user.html", username=username)
+  return response
 
-@app.route('/teste')
-@app.route('/teste/<info>')
-def teste(info):
-  return f"<h1>teste: {escape(info)}</h1>"
+if __name__ == 'beststore':
+    print("Banco de dados inicializado!")
+    db.create_all()
