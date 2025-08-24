@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp,container-queries"></script>
+  <title>BESTEC - Meus Favoritos</title>
+</head>
+
+<body class="relative bg-gray-900 flex flex-col items-center gap-4 m-6">
+  <span class="block absolute w-full h-[2px] bg-gray-800 top-6 rounded-md"></span>
+  <nav class="bg-gray-800 w-fit rounded-3xl flex justify-center items-center overflow-hidden z-10">
+    <a href="{{url_for('index')}}"
+      class="font-medium text-gray-400 hover:text-gray-300 px-4 py-3 hover:bg-gray-600 rounded-md">Página Inicial</a>
+    <a href="{{url_for('categoria')}}"
+      class="font-medium text-gray-400 hover:text-gray-300 px-4 py-3 hover:bg-gray-600 rounded-md">Categorias</a>
+    <a href="{{url_for('usuario')}}"
+      class="font-medium text-gray-400 hover:text-gray-300 px-4 py-3 hover:bg-gray-600 rounded-md">Usuários</a>
+    <a href="{{url_for('anuncio')}}"
+      class="font-medium text-gray-400 hover:text-gray-300 px-4 py-3 hover:bg-gray-600 rounded-md">Anúncios</a>
+    <a href="{{url_for('favoritos')}}"
+      class="font-medium text-gray-400 hover:text-gray-300 px-4 py-3 hover:bg-gray-600 rounded-md">Favoritos</a>
+    <a href="{{url_for('login')}}"
+      class="font-medium text-gray-400 hover:text-gray-300 px-4 py-3 hover:bg-gray-600 rounded-md">Minha Conta</a>
+  </nav>
+
+  <main class="w-full max-w-6xl">
+    <div class="bg-gray-800 rounded-lg p-6 shadow">
+      <h2 class="text-2xl font-bold text-gray-400 mb-6 text-center">Meus Favoritos</h2>
+
+      {% if favoritos %}
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for favorito in favoritos %}
+        <div class="bg-gray-700 rounded-lg p-4">
+          <div class="mb-4">
+            <h3 class="text-lg font-semibold text-gray-300 mb-2">{{ favorito.anuncio.categoria.nome if favorito.anuncio.categoria else 'Sem categoria' }}</h3>
+            <p class="text-gray-400 text-sm mb-2">Por: {{ favorito.anuncio.usuario.nome if favorito.anuncio.usuario else 'Usuário' }}</p>
+            <p class="text-gray-300">{{ favorito.anuncio.anunciocol[:100] }}{% if favorito.anuncio.anunciocol|length > 100 %}...{% endif %}</p>
+          </div>
+
+          <div class="flex gap-2">
+            <a href="{{url_for('pergunta', id_anuncio=favorito.anuncio.id)}}"
+              class="flex-1 bg-green-600/50 hover:bg-green-600 px-3 py-2 rounded text-sm text-center transition-colors">
+              Perguntar
+            </a>
+            <a href="{{url_for('comprar', id_anuncio=favorito.anuncio.id)}}"
+              class="flex-1 bg-blue-600/50 hover:bg-blue-600 px-3 py-2 rounded text-sm text-center transition-colors">
+              Comprar
+            </a>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="text-center py-12">
+        <p class="text-gray-400 text-lg mb-4">Você ainda não tem favoritos</p>
+        <a href="{{url_for('anuncio')}}"
+          class="bg-blue-600/50 hover:bg-blue-600 px-6 py-3 rounded text-gray-200 transition-colors">
+          Ver Anúncios
+        </a>
+      </div>
+      {% endif %}
+    </div>
+  </main>
+</body>
+
+</html>
