@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp,container-queries"></script>
+  <title>BESTEC - Fazer Pergunta</title>
+</head>
+
+<body class="relative bg-gray-900 flex flex-col items-center gap-4 m-6">
+  <span class="block absolute w-full h-[2px] bg-gray-800 top-6 rounded-md"></span>
+  <nav class="bg-gray-800 w-fit rounded-3xl flex justify-center items-center overflow-hidden z-10">
+    <a href="{{url_for('index')}}"
+      class="font-medium text-gray-400 hover:text-gray-300 px-4 py-3 hover:bg-gray-600 rounded-md">Página Inicial</a>
+    <a href="{{url_for('categoria')}}"
+      class="font-medium text-gray-400 hover:text-gray-300 px-4 py-3 hover:bg-gray-600 rounded-md">Categorias</a>
+    <a href="{{url_for('usuario')}}"
+      class="font-medium text-gray-400 hover:text-gray-300 px-4 py-3 hover:bg-gray-600 rounded-md">Usuários</a>
+    <a href="{{url_for('anuncio')}}"
+      class="font-medium text-gray-400 hover:text-gray-300 px-4 py-3 hover:bg-gray-600 rounded-md">Anúncios</a>
+    <a href="{{url_for('favoritos')}}"
+      class="font-medium text-gray-400 hover:text-gray-300 px-4 py-3 hover:bg-gray-600 rounded-md">Favoritos</a>
+    <a href="{{url_for('login')}}"
+      class="font-medium text-gray-400 hover:text-gray-300 px-4 py-3 hover:bg-gray-600 rounded-md">Minha Conta</a>
+  </nav>
+
+  <main class="w-full max-w-4xl">
+    <!-- Informações do Anúncio -->
+    {% if anuncio %}
+    <div class="bg-gray-800 rounded-lg p-6 mb-6 shadow">
+      <h2 class="text-2xl font-bold text-gray-400 mb-4">Anúncio</h2>
+      <div class="text-gray-300">
+        <p class="mb-2"><strong>Categoria:</strong> {{ anuncio.categoria.nome if anuncio.categoria else '-' }}</p>
+        <p class="mb-2"><strong>Anunciante:</strong> {{ anuncio.usuario.nome if anuncio.usuario else '-' }}</p>
+        <p><strong>Descrição:</strong> {{ anuncio.anunciocol }}</p>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Formulário de Pergunta -->
+    <div class="bg-gray-800 rounded-lg p-6 mb-6 shadow">
+      <h2 class="text-2xl font-bold text-gray-400 mb-6 text-center">Fazer Pergunta</h2>
+
+      <form method="post" action="{{url_for('novapergunta')}}" class="max-w-2xl mx-auto">
+        {% if anuncio %}
+        <input type="hidden" name="id_anuncio" value="{{ anuncio.id }}">
+        {% else %}
+        <div class="mb-4">
+          <label for="id_anuncio" class="block text-gray-400 font-medium mb-2">Anúncio</label>
+          <select id="id_anuncio" name="id_anuncio" required
+            class="outline-none w-full h-12 bg-gray-900 rounded-md border-2 border-gray-900 transition-colors duration-200 ease-in-out text-white px-5 focus:border-blue-600">
+            <option value="">Selecione um anúncio</option>
+            {% for anuncio_item in anuncios %}
+            <option value="{{ anuncio_item.id }}">{{ anuncio_item.anunciocol[:50] }}...</option>
+            {% endfor %}
+          </select>
+        </div>
+        {% endif %}
+
+        <div class="mb-4">
+          <label for="id_usuario" class="block text-gray-400 font-medium mb-2">Usuário</label>
+          <select id="id_usuario" name="id_usuario" required
+            class="outline-none w-full h-12 bg-gray-900 rounded-md border-2 border-gray-900 transition-colors duration-200 ease-in-out text-white px-5 focus:border-blue-600">
+            <option value="">Selecione seu usuário</option>
+            {% for usuario in usuarios %}
+            <option value="{{ usuario.id }}">{{ usuario.nome }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="mb-6">
+          <label for="pergunta" class="block text-gray-400 font-medium mb-2">Sua Pergunta</label>
+          <textarea id="pergunta" name="pergunta" rows="4" required placeholder="Digite sua pergunta sobre este anúncio..."
+            class="outline-none w-full bg-gray-900 rounded-md border-2 border-gray-900 transition-colors duration-200 ease-in-out text-white px-5 py-3 focus:border-blue-600 resize-vertical"></textarea>
+        </div>
+
+        <div class="flex gap-4">
+          <button type="submit"
+            class="flex-1 bg-blue-600/50 rounded-md h-12 border-0 text-gray-200 font-bold cursor-pointer transition-all duration-200 ease-in-out hover:bg-blue-600 hover:text-white">
+            Enviar Pergunta
+          </button>
+          <a href="{{url_for('anuncio')}}"
+            class="flex-1 bg-gray-600/50 rounded-md h-12 border-0 text-gray-200 font-bold cursor-pointer transition-all duration-200 ease-in-out hover:bg-gray-600 hover:text-white flex items-center justify-center">
+            Cancelar
+          </a>
+        </div>
+      </form>
+    </div>
+
+    <!-- Lista de Perguntas do Anúncio -->
+    {% if anuncio and anuncio.perguntas %}
+    <div class="bg-gray-800 rounded-lg p-6 shadow">
+      <h2 class="text-2xl font-bold text-gray-400 mb-6 text-center">Perguntas sobre este Anúncio</h2>
+
+      <div class="space-y-4">
+        {% for pergunta in anuncio.perguntas %}
+        <div class="bg-gray-700 rounded-lg p-4">
+          <div class="flex justify-between items-start mb-2">
+            <span class="text-blue-400 font-semibold">{{ pergunta.usuario.nome if pergunta.usuario else 'Usuário' }}</span>
+            <span class="text-gray-500 text-sm">Pergunta #{{ pergunta.id }}</span>
+          </div>
+          <p class="text-gray-300">{{ pergunta.pergunta }}</p>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+  </main>
+</body>
+
+</html>
