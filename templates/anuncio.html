@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp,container-queries"></script>
+  <title>BESTEC - Cadastro de {{titulo}}</title>
+</head>
+
+<body class="relative bg-gray-900 flex flex-col items-center gap-4 m-6">
+  <span class="block absolute w-full h-[2px] bg-gray-800 top-6 rounded-md"></span>
+  <nav class="bg-gray-800 w-fit rounded-3xl flex justify-center items-center overflow-hidden z-10">
+    <a href="{{url_for('index')}}"
+      class="font-medium text-gray-400 hover:text-gray-300 px-4 py-3 hover:bg-gray-600 rounded-md">Página Inicial</a>
+    <a href="{{url_for('categoria')}}"
+      class="font-medium text-gray-400 hover:text-gray-300 px-4 py-3 hover:bg-gray-600 rounded-md">Categorias</a>
+    <a href="{{url_for('usuario')}}"
+      class="font-medium text-gray-400 hover:text-gray-300 px-4 py-3 hover:bg-gray-600 rounded-md">Usuários</a>
+    <a href="{{url_for('anuncio')}}"
+      class="font-medium text-gray-400 hover:text-gray-300 px-4 py-3 hover:bg-gray-600 rounded-md">Anúncios</a>
+    <a href="{{url_for('favoritos')}}"
+      class="font-medium text-gray-400 hover:text-gray-300 px-4 py-3 hover:bg-gray-600 rounded-md">Favoritos</a>
+    <a href="{{url_for('login')}}"
+      class="font-medium text-gray-400 hover:text-gray-300 px-4 py-3 hover:bg-gray-600 rounded-md">Minha Conta</a>
+  </nav>
+
+  <main class="w-full max-w-6xl">
+    <!-- Formulário de Cadastro -->
+    <div class="bg-gray-800 rounded-lg p-6 mb-6 shadow">
+      <h2 class="text-2xl font-bold text-gray-400 mb-6 text-center">Cadastro de {{titulo}}</h2>
+
+      <form method="post" action="{{url_for('novoanuncio')}}" class="max-w-2xl mx-auto">
+        <div class="mb-4">
+          <label for="anunciocol" class="block text-gray-400 font-medium mb-2">Descrição do Anúncio</label>
+          <textarea id="anunciocol" name="anunciocol" rows="4" required
+            class="outline-none w-full bg-gray-900 rounded-md border-2 border-gray-900 transition-colors duration-200 ease-in-out text-white px-5 py-3 focus:border-blue-600 resize-vertical"></textarea>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <div>
+            <label for="id_categoria" class="block text-gray-400 font-medium mb-2">Categoria</label>
+            <select id="id_categoria" name="id_categoria" required
+              class="outline-none w-full h-12 bg-gray-900 rounded-md border-2 border-gray-900 transition-colors duration-200 ease-in-out text-white px-5 focus:border-blue-600">
+              <option value="">Selecione uma categoria</option>
+              {% for categoria in categorias %}
+              <option value="{{ categoria.id }}">{{ categoria.nome }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div>
+            <label for="id_usuario" class="block text-gray-400 font-medium mb-2">Usuário</label>
+            <select id="id_usuario" name="id_usuario" required
+              class="outline-none w-full h-12 bg-gray-900 rounded-md border-2 border-gray-900 transition-colors duration-200 ease-in-out text-white px-5 focus:border-blue-600">
+              <option value="">Selecione um usuário</option>
+              {% for usuario in usuarios %}
+              <option value="{{ usuario.id }}">{{ usuario.nome }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+
+        <button type="submit"
+          class="w-full bg-blue-600/50 rounded-md h-12 border-0 text-gray-200 font-bold cursor-pointer transition-all duration-200 ease-in-out hover:bg-blue-600 hover:text-white">
+          Cadastrar Anúncio
+        </button>
+      </form>
+    </div>
+
+    <!-- Lista de Anúncios -->
+    <div class="bg-gray-800 rounded-lg p-6 shadow">
+      <h2 class="text-2xl font-bold text-gray-400 mb-6 text-center">Lista de {{titulo}}</h2>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-gray-400">
+          <thead>
+            <tr class="border-b border-gray-700">
+              <th class="text-left py-3 px-4 font-semibold">Descrição</th>
+              <th class="text-left py-3 px-4 font-semibold">Categoria</th>
+              <th class="text-left py-3 px-4 font-semibold">Usuário</th>
+              <th class="text-left py-3 px-4 font-semibold">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for anuncio in anuncios %}
+            <tr class="border-b border-gray-700 hover:bg-gray-700 transition-colors">
+              <td class="py-3 px-4">{{ anuncio.anunciocol[:100] }}{% if anuncio.anunciocol|length > 100 %}...{% endif %}</td>
+              <td class="py-3 px-4">{{ anuncio.categoria.nome if anuncio.categoria else '-' }}</td>
+              <td class="py-3 px-4">{{ anuncio.usuario.nome if anuncio.usuario else '-' }}</td>
+              <td class="py-3 px-4">
+                <div class="flex gap-2">
+                  <a href="{{url_for('pergunta', id_anuncio=anuncio.id)}}"
+                    class="bg-green-600/50 hover:bg-green-600 px-3 py-1 rounded text-sm transition-colors">
+                    Perguntar
+                  </a>
+                  <a href="{{url_for('favoritar', id_anuncio=anuncio.id)}}"
+                    class="bg-yellow-600/50 hover:bg-yellow-600 px-3 py-1 rounded text-sm transition-colors">
+                    Favoritar
+                  </a>
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</body>
+
+</html>
