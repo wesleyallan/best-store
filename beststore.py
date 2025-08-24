@@ -50,6 +50,20 @@ class Usuario(db.Model):
         self.bairro = bairro
         self.numero = numero
 
+class Anuncio(db.Model):
+    __tablename__ = "anuncio"
+    id = db.Column(db.Integer, primary_key=True)
+    anunciocol = db.Column(db.String(500))
+    id_categoria = db.Column(db.Integer, db.ForeignKey("categoria.id"), nullable=False)
+    id_usuario = db.Column(db.Integer, db.ForeignKey("usuario.id"), nullable=False)
+
+    categoria = db.relationship('Categoria', backref='anuncios')
+    usuario = db.relationship('Usuario', backref='anuncios')
+
+    def __init__(self, anunciocol, id_categoria, id_usuario):
+        self.anunciocol = anunciocol
+        self.id_categoria = id_categoria
+        self.id_usuario = id_usuario
 
 @app.route('/')
 def index():
