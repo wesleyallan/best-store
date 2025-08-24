@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp,container-queries"></script>
+  <title>BESTEC - Cadastro de {{titulo}}</title>
+</head>
+
+<body class="relative bg-gray-900 flex flex-col items-center gap-4 m-6">
+  <span class="block absolute w-full h-[2px] bg-gray-800 top-6 rounded-md"></span>
+  <nav class="bg-gray-800 w-fit rounded-3xl flex justify-center items-center overflow-hidden z-10">
+    <a href="{{url_for('index')}}"
+      class="font-medium text-gray-400 hover:text-gray-300 px-4 py-3 hover:bg-gray-600 rounded-md">Página Inicial</a>
+    <a href="{{url_for('categoria')}}"
+      class="font-medium text-gray-400 hover:text-gray-300 px-4 py-3 hover:bg-gray-600 rounded-md">Categorias</a>
+    <a href="{{url_for('usuario')}}"
+      class="font-medium text-gray-400 hover:text-gray-300 px-4 py-3 hover:bg-gray-600 rounded-md">Usuários</a>
+    <a href="{{url_for('anuncio')}}"
+      class="font-medium text-gray-400 hover:text-gray-300 px-4 py-3 hover:bg-gray-600 rounded-md">Anúncios</a>
+    <a href="{{url_for('favoritos')}}"
+      class="font-medium text-gray-400 hover:text-gray-300 px-4 py-3 hover:bg-gray-600 rounded-md">Favoritos</a>
+    <a href="{{url_for('login')}}"
+      class="font-medium text-gray-400 hover:text-gray-300 px-4 py-3 hover:bg-gray-600 rounded-md">Minha Conta</a>
+  </nav>
+
+  <main class="w-full max-w-6xl">
+    <!-- Formulário de Cadastro -->
+    <div class="bg-gray-800 rounded-lg p-6 mb-6 shadow">
+      <h2 class="text-2xl font-bold text-gray-400 mb-6 text-center">Cadastro de {{titulo}}</h2>
+
+      <form method="post" action="{{url_for('novacategoria')}}" class="max-w-md mx-auto">
+        <div class="mb-4">
+          <label for="nome" class="block text-gray-400 font-medium mb-2">Nome</label>
+          <input type="text" id="nome" name="nome" required
+            class="outline-none w-full h-12 bg-gray-900 rounded-md border-2 border-gray-900 transition-colors duration-200 ease-in-out text-white px-5 focus:border-blue-600">
+        </div>
+
+        <div class="mb-6">
+          <label for="desc" class="block text-gray-400 font-medium mb-2">Descrição</label>
+          <textarea id="desc" name="desc" rows="4" required
+            class="outline-none w-full bg-gray-900 rounded-md border-2 border-gray-900 transition-colors duration-200 ease-in-out text-white px-5 py-3 focus:border-blue-600 resize-vertical"></textarea>
+        </div>
+
+        <button type="submit"
+          class="w-full bg-blue-600/50 rounded-md h-12 border-0 text-gray-200 font-bold cursor-pointer transition-all duration-200 ease-in-out hover:bg-blue-600 hover:text-white">
+          Cadastrar
+        </button>
+      </form>
+    </div>
+
+    <!-- Lista de Categorias -->
+    <div class="bg-gray-800 rounded-lg p-6 shadow">
+      <h2 class="text-2xl font-bold text-gray-400 mb-6 text-center">Lista de {{titulo}}</h2>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-gray-400">
+          <thead>
+            <tr class="border-b border-gray-700">
+              <th class="text-left py-3 px-4 font-semibold">Nome</th>
+              <th class="text-left py-3 px-4 font-semibold">Descrição</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for categoria in categorias %}
+            <tr class="border-b border-gray-700 hover:bg-gray-700 transition-colors">
+              <td class="py-3 px-4">{{ categoria.nome }}</td>
+              <td class="py-3 px-4">{{ categoria.descricao }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</body>
+
+</html>
