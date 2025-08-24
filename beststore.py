@@ -26,6 +26,31 @@ class Categoria(db.Model):
         self.nome = nome
         self.descricao = descricao
 
+class Usuario(db.Model):
+    __tablename__ = "usuario"
+    id = db.Column(db.Integer, primary_key=True)
+    nome = db.Column(db.String(256), nullable=False)
+    email = db.Column(db.String(256), nullable=False, unique=True)
+    cpf = db.Column(db.String(14), nullable=False, unique=True)
+    dt_nascimento = db.Column(db.Date)
+    telefone = db.Column(db.String(20))
+    rua = db.Column(db.String(256))
+    cidade = db.Column(db.String(100))
+    bairro = db.Column(db.String(100))
+    numero = db.Column(db.String(10))
+
+    def __init__(self, nome, email, cpf, dt_nascimento=None, telefone=None, rua=None, cidade=None, bairro=None, numero=None):
+        self.nome = nome
+        self.email = email
+        self.cpf = cpf
+        self.dt_nascimento = dt_nascimento
+        self.telefone = telefone
+        self.rua = rua
+        self.cidade = cidade
+        self.bairro = bairro
+        self.numero = numero
+
+
 @app.route('/')
 def index():
   return render_template("index.html")
