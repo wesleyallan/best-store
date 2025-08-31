@@ -23,6 +23,10 @@
       class="font-medium text-gray-400 hover:text-gray-300 px-4 py-3 hover:bg-gray-600 rounded-md">Favoritos</a>
     <a href="{{url_for('login')}}"
       class="font-medium text-gray-400 hover:text-gray-300 px-4 py-3 hover:bg-gray-600 rounded-md">Minha Conta</a>
+    <a href="{{url_for('logout')}}"
+      class="font-medium text-red-400 hover:text-red-300 px-4 py-3 hover:bg-red-600 rounded-md ml-2">
+      <i class="fas fa-sign-out-alt mr-1"></i>Sair
+    </a>
   </nav>
 
   <main class="w-full max-w-6xl">
@@ -38,8 +42,8 @@
         </div>
 
         <div class="mb-6">
-          <label for="desc" class="block text-gray-400 font-medium mb-2">Descrição</label>
-          <textarea id="desc" name="desc" rows="4" required
+          <label for="descricao" class="block text-gray-400 font-medium mb-2">Descrição</label>
+          <textarea id="descricao" name="descricao" rows="4" required
             class="outline-none w-full bg-gray-900 rounded-md border-2 border-gray-900 transition-colors duration-200 ease-in-out text-white px-5 py-3 focus:border-blue-600 resize-vertical"></textarea>
         </div>
 

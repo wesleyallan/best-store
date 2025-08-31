@@ -1,7 +1,11 @@
 from flask import Flask, make_response, render_template, request, url_for, redirect
 from flask_sqlalchemy import SQLAlchemy
+from flask_login import (current_user, LoginManager,
+                         login_user, logout_user,
+                         login_required)
 from dotenv import load_dotenv
 from datetime import datetime
+import hashlib
 import os
 
 load_dotenv('.env.development')
@@ -11,7 +15,18 @@ app = Flask(__name__)
 database_uri = os.getenv('DATABASE_URL')
 app.config['SQLALCHEMY_DATABASE_URI'] = database_uri
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+# Configuração de autenticação
+secret_key = os.getenv('SECRET_KEY')
+app.secret_key = secret_key
+
 db = SQLAlchemy(app)
+
+# Configuração do Flask-Login
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
+login_manager.login_message = 'Você precisa fazer login para acessar esta página.'
 
 
 class Categoria(db.Model):
@@ -30,7 +45,8 @@ class Usuario(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nome = db.Column(db.String(256), nullable=False)
     email = db.Column(db.String(256), nullable=False, unique=True)
-    cpf = db.Column(db.String(14), nullable=False, unique=True)
+    senha = db.Column(db.String(256))  # Campo senha adicionado
+    cpf = db.Column(db.String(14), unique=True)
     dt_nascimento = db.Column(db.Date)
     telefone = db.Column(db.String(20))
     rua = db.Column(db.String(256))
@@ -38,9 +54,10 @@ class Usuario(db.Model):
     bairro = db.Column(db.String(100))
     numero = db.Column(db.String(10))
 
-    def __init__(self, nome, email, cpf, dt_nascimento=None, telefone=None, rua=None, cidade=None, bairro=None, numero=None):
+    def __init__(self, nome, email, senha=None, cpf=None, dt_nascimento=None, telefone=None, rua=None, cidade=None, bairro=None, numero=None):
         self.nome = nome
         self.email = email
+        self.senha = senha
         self.cpf = cpf
         self.dt_nascimento = dt_nascimento
         self.telefone = telefone
@@ -48,6 +65,19 @@ class Usuario(db.Model):
         self.cidade = cidade
         self.bairro = bairro
         self.numero = numero
+
+    # Métodos necessários para Flask-Login
+    def is_authenticated(self):
+        return True
+
+    def is_active(self):
+        return True
+
+    def is_anonymous(self):
+        return False
+
+    def get_id(self):
+        return str(self.id)
 
 
 class Anuncio(db.Model):
@@ -139,44 +169,108 @@ class CompraAnuncio(db.Model):
         self.quantidade = quantidade
 
 
+@login_manager.user_loader
+def load_user(user_id):
+    return Usuario.query.get(int(user_id))
+
+
 @app.errorhandler(404)
 def paginanaoencontrada(error):
     return render_template('404.html')
 
 
 @app.route('/')
+@login_required
 def index():
     return render_template("index.html")
 
 
-@app.route('/login')
+@app.route('/login', methods=['GET', 'POST'])
 def login():
-    cookie = request.cookies.get("username")
-    if cookie:
-        return render_template("user.html", username=cookie)
-    else:
-        return render_template("login.html")
+    if request.method == 'POST':
+        # Verificar se é login ou cadastro
+        if 'login' in request.form:
+            # Processo de login
+            email = request.form.get('email')
+            senha = request.form.get('senha')
+
+            if email and senha:
+                # Hash da senha para comparação
+                senha_hash = hashlib.sha512(
+                    str(senha).encode("utf-8")).hexdigest()
+                user = Usuario.query.filter_by(
+                    email=email, senha=senha_hash).first()
+
+                if user:
+                    login_user(user)
+                    return redirect(url_for('index'))
+                else:
+                    return render_template("login.html", error="Email ou senha incorretos")
+
+        elif 'cadastro' in request.form:
+            # Processo de cadastro
+            nome = request.form.get('nome')
+            email = request.form.get('email_cadastro')
+            senha = request.form.get('senha_cadastro')
+
+            if nome and email and senha:
+                # Verificar se usuário já existe
+                usuario_existente = Usuario.query.filter_by(
+                    email=email).first()
+                if usuario_existente:
+                    return render_template("login.html", error="Email já cadastrado")
+
+                # Hash da senha
+                senha_hash = hashlib.sha512(
+                    str(senha).encode("utf-8")).hexdigest()
+
+                # Criar novo usuário
+                novo_usuario = Usuario(
+                    nome=nome,
+                    email=email,
+                    senha=senha_hash
+                )
+                db.session.add(novo_usuario)
+                db.session.commit()
+
+                # Fazer login automático
+                login_user(novo_usuario)
+                return redirect(url_for('index'))
+
+    return render_template("login.html")
+
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('login'))
 
 
 @app.route("/categoria")
+@login_required
 def categoria():
     return render_template('categoria.html', categorias=Categoria.query.all(), titulo='Categoria')
 
 
 @app.route("/categoria/criar", methods=['POST'])
+@login_required
 def criarcategoria():
-    categoria = Categoria(request.form.get('nome'), request.form.get('descricao'))
+    categoria = Categoria(request.form.get(
+        'nome'), request.form.get('descricao'))
     db.session.add(categoria)
     db.session.commit()
     return redirect(url_for('categoria'))
 
 
 @app.route("/usuario")
+@login_required
 def usuario():
     return render_template('usuario.html', usuarios=Usuario.query.all(), titulo='Usuário')
 
 
 @app.route("/usuario/novo", methods=['POST'])
+@login_required
 def novousuario():
     dt_nascimento = None
     if request.form.get('dt_nascimento'):
@@ -186,9 +280,16 @@ def novousuario():
         except ValueError:
             pass
 
+    # Hash da senha se fornecida
+    senha_hash = None
+    if request.form.get('senha'):
+        senha_hash = hashlib.sha512(
+            str(request.form.get('senha')).encode("utf-8")).hexdigest()
+
     usuario = Usuario(
         nome=request.form.get('nome'),
         email=request.form.get('email'),
+        senha=senha_hash,
         cpf=request.form.get('cpf'),
         dt_nascimento=dt_nascimento,
         telefone=request.form.get('telefone'),
@@ -203,6 +304,7 @@ def novousuario():
 
 
 @app.route("/usuario/detalhar/<int:id>")
+@login_required
 def buscarusuario(id):
     usuario = Usuario.query.get(id)
     if usuario:
@@ -210,7 +312,8 @@ def buscarusuario(id):
     return "Usuário não encontrado"
 
 
-@app.route("/usuario/editar/<int:id>", methods=['GET','POST'])
+@app.route("/usuario/editar/<int:id>", methods=['GET', 'POST'])
+@login_required
 def editarusuario(id):
     usuario = Usuario.query.get(id)
     if not usuario:
@@ -220,6 +323,11 @@ def editarusuario(id):
         usuario.nome = request.form.get('nome')
         usuario.email = request.form.get('email')
         usuario.cpf = request.form.get('cpf')
+
+        # Atualizar senha se fornecida
+        if request.form.get('senha'):
+            usuario.senha = hashlib.sha512(
+                str(request.form.get('senha')).encode("utf-8")).hexdigest()
 
         if request.form.get('dt_nascimento'):
             try:
@@ -242,6 +350,7 @@ def editarusuario(id):
 
 
 @app.route("/usuario/deletar/<int:id>")
+@login_required
 def deletarusuario(id):
     usuario = Usuario.query.get(id)
     if usuario:
@@ -251,6 +360,7 @@ def deletarusuario(id):
 
 
 @app.route("/anuncio")
+@login_required
 def anuncio():
     return render_template('anuncio.html',
                            anuncios=Anuncio.query.all(),
@@ -260,6 +370,7 @@ def anuncio():
 
 
 @app.route("/anuncio/criar", methods=['POST'])
+@login_required
 def criaranuncio():
     anuncio = Anuncio(
         anunciocol=request.form.get('anunciocol'),
@@ -273,6 +384,7 @@ def criaranuncio():
 
 @app.route("/pergunta")
 @app.route("/pergunta/<int:id_anuncio>")
+@login_required
 def pergunta(id_anuncio=None):
     anuncio = None
     if id_anuncio:
@@ -285,6 +397,7 @@ def pergunta(id_anuncio=None):
 
 
 @app.route("/pergunta/nova", methods=['POST'])
+@login_required
 def novapergunta():
     pergunta = Pergunta(
         id_anuncio=request.form.get('id_anuncio'),
@@ -298,6 +411,7 @@ def novapergunta():
 
 
 @app.route("/favoritar/<int:id_anuncio>")
+@login_required
 def favoritar(id_anuncio):
     usuario_id = 1
     favorito_existe = Favorito.query.filter_by(
@@ -312,6 +426,7 @@ def favoritar(id_anuncio):
 
 
 @app.route("/favoritos")
+@login_required
 def favoritos():
     usuario_id = 1
     favoritos = Favorito.query.filter_by(id_usuario=usuario_id).all()
@@ -319,6 +434,7 @@ def favoritos():
 
 
 @app.route("/comprar/<int:id_anuncio>")
+@login_required
 def comprar(id_anuncio):
     usuario_id = 1
 
@@ -335,11 +451,13 @@ def comprar(id_anuncio):
 
 
 @app.route("/relatorios/vendas")
+@login_required
 def relVendas():
     return render_template('relVendas.html')
 
 
 @app.route("/relatorios/compras")
+@login_required
 def relCompras():
     return render_template('relCompras.html')
 

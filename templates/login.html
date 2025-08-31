@@ -1,79 +1,117 @@
 <!DOCTYPE html>
-<html lang="pt_BR">
+<html lang="pt-BR">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <script src="https://kit.fontawesome.com/177f0e37f6.js" crossorigin="anonymous"></script>
   <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp,container-queries"></script>
-  <title>Bestec - Login</title>
+  <title>BESTEC - Login</title>
 </head>
 
-<body class="relative bg-gray-900 flex flex-col items-center gap-4 m-6">
-  <span class="block absolute w-full h-[2px] bg-gray-800 top-6 rounded-md"></span>
-  <nav class="bg-gray-800 w-fit rounded-3xl flex justify-center items-center overflow-hidden z-10">
-    <a href="{{url_for("index")}}"
-      class="font-medium text-gray-400 hover:text-gray-300 px-4 py-3 hover:bg-gray-600 rounded-md">Página Inicial</a>
-    <a href="{{url_for("login")}}"
-      class="font-medium text-gray-400 hover:text-gray-300 px-4 py-3 hover:bg-gray-600 rounded-md">Categorias</a>
-    <a href="{{url_for("login")}}"
-      class="font-medium text-gray-400 hover:text-gray-300 px-4 py-3 hover:bg-gray-600 rounded-md">Minha Conta</a>
-  </nav>
+<body class="relative bg-gray-900 flex flex-col items-center justify-center min-h-screen m-6">
   <div class="flex flex-col justify-center items-center h-full">
-    <main class="max-w-screen-lg bg-gray-800 rounded-lg flex flex-col md:flex-row shadow">
-      <!-- Registro -->
-      <div class="flex flex-col gap-4 p-16">
+    <div class="mb-8 text-center">
+      <h1 class="text-4xl font-bold text-gray-300 mb-2">BESTEC</h1>
+      <p class="text-gray-500">Sistema de Gestão Eletrônica</p>
+    </div>
+
+    {% if error %}
+      <div class="mb-4 bg-red-600/20 border border-red-600 text-red-300 px-4 py-3 rounded-md max-w-md w-full text-center">
+        {{ error }}
+      </div>
+    {% endif %}
+
+    <main class="max-w-4xl bg-gray-800 rounded-lg flex flex-col md:flex-row shadow-xl overflow-hidden">
+      <!-- Cadastro -->
+      <div class="flex flex-col gap-4 p-8 md:p-12 flex-1">
         <div class="flex justify-center w-full">
-          <h1 class="text-2xl text-gray-400">
-            Registro
-          </h1>
+          <h2 class="text-2xl text-gray-300 font-semibold">
+            <i class="fas fa-user-plus mr-2 text-blue-500"></i>
+            Criar Conta
+          </h2>
         </div>
-        <form class="flex flex-col text-gray-500" method="post" action="caduser">
-          <input
-            class="outline-none w-full h-12 bg-gray-900 rounded-md border-2 border-gray-900 transition-colors duration-200 ease-in-out text-white px-5 focus:border-blue-600"
-            type="text" name="user" placeholder="Username" required />
-          <input
-            class="outline-none w-full h-12 bg-gray-900 rounded-md border-2 border-gray-900 transition-colors duration-200 ease-in-out text-white px-5 focus:border-blue-600 mt-4"
-            type="email" name="mail" placeholder="E-Mail" required />
-          <input
-            class="outline-none w-full h-12 bg-gray-900 rounded-md border-2 border-gray-900 transition-colors duration-200 ease-in-out text-white px-5 focus:border-blue-600 mt-4"
-            type="password" name="senha" placeholder="Senha" required />
-          <label for="termo" class="text-gray-500 flex gap-2 items-center justify-center mt-4">
-            <input class="hidden peer" id="termo" type="checkbox" name="termos" required />
-            <span class="w-5 h-5 bg-gray-900 rounded-sm peer-checked:bg-blue-600 border-none cursor-pointer"></span>
-            Li e aceito os <a href="#" class="text-gray-400 hover:text-blue-500">termos de uso</a>
-          </label>
-          <input
-            class="outline-none bg-blue-600/50 mt-4 rounded-md h-12 border-0 text-gray-200 font-bold cursor-pointer transition-all duration-200 ease-in-out hover:bg-blue-600 hover:text-white"
-            type="submit" value="Registrar" />
+        <form class="flex flex-col text-gray-500" method="post">
+          <input type="hidden" name="cadastro" value="1">
+
+          <div class="mb-4">
+            <label class="block text-gray-400 text-sm mb-2">Nome Completo</label>
+            <input
+              class="outline-none w-full h-12 bg-gray-900 rounded-md border-2 border-gray-900 transition-colors duration-200 ease-in-out text-white px-5 focus:border-blue-600"
+              type="text" name="nome" placeholder="Seu nome completo" required />
+          </div>
+
+          <div class="mb-4">
+            <label class="block text-gray-400 text-sm mb-2">E-mail</label>
+            <input
+              class="outline-none w-full h-12 bg-gray-900 rounded-md border-2 border-gray-900 transition-colors duration-200 ease-in-out text-white px-5 focus:border-blue-600"
+              type="email" name="email_cadastro" placeholder="seu@email.com" required />
+          </div>
+
+          <div class="mb-6">
+            <label class="block text-gray-400 text-sm mb-2">Senha</label>
+            <input
+              class="outline-none w-full h-12 bg-gray-900 rounded-md border-2 border-gray-900 transition-colors duration-200 ease-in-out text-white px-5 focus:border-blue-600"
+              type="password" name="senha_cadastro" placeholder="Sua senha" required />
+          </div>
+
+          <button
+            class="outline-none bg-blue-600/50 rounded-md h-12 border-0 text-gray-200 font-bold cursor-pointer transition-all duration-200 ease-in-out hover:bg-blue-600 hover:text-white"
+            type="submit">
+            <i class="fas fa-user-plus mr-2"></i>
+            Criar Conta
+          </button>
         </form>
       </div>
 
+      <!-- Separador -->
+      <div class="border-t-2 border-gray-700 md:border-l-2 md:border-t-0"></div>
+
       <!-- Login -->
-      <div class="border-t-2 border-gray-900/50 md:border-l-2 md:border-t-0 flex flex-col gap-4 p-16">
+      <div class="flex flex-col gap-4 p-8 md:p-12 flex-1">
         <div class="flex justify-center w-full">
-          <h1 class="text-2xl text-gray-400">
-            Login
-          </h1>
+          <h2 class="text-2xl text-gray-300 font-semibold">
+            <i class="fas fa-sign-in-alt mr-2 text-green-500"></i>
+            Entrar
+          </h2>
         </div>
-        <form class="form flex flex-col text-gray-500" method="post" action="loguser">
-          <input
-            class="outline-none w-full h-12 bg-gray-900 rounded-md border-2 border-gray-900 transition-colors duration-200 ease-in-out text-white px-5 focus:border-blue-600"
-            type="text" name="user" placeholder="Username" required />
-          <input
-            class="outline-none w-full h-12 bg-gray-900 rounded-md border-2 border-gray-900 transition-colors duration-200 ease-in-out text-white px-5 focus:border-blue-600 mt-4"
-            type="password" name="senha" placeholder="Senha" required />
-          <a class="mt-4 text-gray-500 hover:text-blue-600" href="#">Esqueceu a senha?</a>
-          <input
-            class="outline-none bg-blue-600/50 mt-4 rounded-md h-12 border-0 text-gray-200 font-bold cursor-pointer transition-all duration-200 ease-in-out hover:bg-blue-600 hover:text-white"
-            type="submit" value="Entrar" />
-          <div class="border-t-2 border-gray-700 mt-4 ">
-            <a class="mt-4 flex justify-center items-center rounded-md bg-gray-900 h-12 text-gray-400 transition-all duration-200 ease-in-out hover:bg-blue-600 hover:text-white"
-              href="#"><i class="fab fa-google mr-2"></i>Google</a>
+        <form class="flex flex-col text-gray-500" method="post">
+          <input type="hidden" name="login" value="1">
+
+          <div class="mb-4">
+            <label class="block text-gray-400 text-sm mb-2">E-mail</label>
+            <input
+              class="outline-none w-full h-12 bg-gray-900 rounded-md border-2 border-gray-900 transition-colors duration-200 ease-in-out text-white px-5 focus:border-blue-600"
+              type="email" name="email" placeholder="seu@email.com" required />
+          </div>
+
+          <div class="mb-6">
+            <label class="block text-gray-400 text-sm mb-2">Senha</label>
+            <input
+              class="outline-none w-full h-12 bg-gray-900 rounded-md border-2 border-gray-900 transition-colors duration-200 ease-in-out text-white px-5 focus:border-blue-600"
+              type="password" name="senha" placeholder="Sua senha" required />
+          </div>
+
+          <button
+            class="outline-none bg-green-600/50 rounded-md h-12 border-0 text-gray-200 font-bold cursor-pointer transition-all duration-200 ease-in-out hover:bg-green-600 hover:text-white"
+            type="submit">
+            <i class="fas fa-sign-in-alt mr-2"></i>
+            Entrar
+          </button>
+
+          <div class="border-t-2 border-gray-700 mt-6 pt-4 text-center">
+            <p class="text-gray-500 text-sm">
+              <i class="fas fa-shield-alt mr-1"></i>
+              Login seguro com criptografia
+            </p>
           </div>
         </form>
       </div>
     </main>
+
+    <div class="mt-8 text-center text-gray-500 text-sm">
+      <p>© 2024 BESTEC - Sistema de Gestão Eletrônica</p>
+    </div>
   </div>
 </body>
 
