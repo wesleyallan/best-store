@@ -528,4 +528,5 @@ def user(username):
 
 if __name__ == 'beststore':
     db.create_all()
+    # Comentar apenas para testar
     app.run()
