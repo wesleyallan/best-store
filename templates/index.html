@@ -24,9 +24,21 @@
     <a href="{{url_for('login')}}"
       class="font-medium text-gray-400 hover:text-gray-300 px-4 py-3 hover:bg-gray-600 rounded-md">Minha Conta</a>
   </nav>
-  <main class="p-6 bg-gray-800 w-full rounded-md overlfow-hidden shadow">
-    <h1 class="font-bold text-center text-gray-400">Bem vindo a BESTEC</h1>
-    <p class=" text-center text-gray-400">Seja bem vindo a melhor loja de compras e vendas de eletronicos do Brasil</p>
+  <main class="p-6 bg-gray-800 w-full rounded-md overflow-hidden shadow">
+    <h1 class="font-bold text-center text-gray-400 mb-4">Bem vindo a BESTEC</h1>
+    <p class="text-center text-gray-400 mb-8">Seja bem vindo a melhor loja de compras e vendas de eletronicos do Brasil</p>
+
+    <!-- Links dos Relatórios -->
+    <div class="mt-8 flex justify-center gap-4">
+      <a href="{{url_for('relVendas')}}"
+        class="bg-blue-600/50 text-gray-200 px-6 py-3 rounded-md font-medium hover:bg-blue-600 transition-colors">
+        Relatório de Vendas
+      </a>
+      <a href="{{url_for('relCompras')}}"
+        class="bg-green-600/50 text-gray-200 px-6 py-3 rounded-md font-medium hover:bg-green-600 transition-colors">
+        Relatório de Compras
+      </a>
+    </div>
   </main>
 </body>
 
