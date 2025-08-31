@@ -24,6 +24,7 @@ class Categoria(db.Model):
         self.nome = nome
         self.descricao = descricao
 
+
 class Usuario(db.Model):
     __tablename__ = "usuario"
     id = db.Column(db.Integer, primary_key=True)
@@ -48,12 +49,15 @@ class Usuario(db.Model):
         self.bairro = bairro
         self.numero = numero
 
+
 class Anuncio(db.Model):
     __tablename__ = "anuncio"
     id = db.Column(db.Integer, primary_key=True)
     anunciocol = db.Column(db.String(500))
-    id_categoria = db.Column(db.Integer, db.ForeignKey("categoria.id"), nullable=False)
-    id_usuario = db.Column(db.Integer, db.ForeignKey("usuario.id"), nullable=False)
+    id_categoria = db.Column(db.Integer, db.ForeignKey(
+        "categoria.id"), nullable=False)
+    id_usuario = db.Column(db.Integer, db.ForeignKey(
+        "usuario.id"), nullable=False)
 
     categoria = db.relationship('Categoria', backref='anuncios')
     usuario = db.relationship('Usuario', backref='anuncios')
@@ -63,11 +67,14 @@ class Anuncio(db.Model):
         self.id_categoria = id_categoria
         self.id_usuario = id_usuario
 
+
 class Favorito(db.Model):
     __tablename__ = "favorito"
     id = db.Column(db.Integer, primary_key=True)
-    id_usuario = db.Column(db.Integer, db.ForeignKey("usuario.id"), nullable=False)
-    id_anuncio = db.Column(db.Integer, db.ForeignKey("anuncio.id"), nullable=False)
+    id_usuario = db.Column(db.Integer, db.ForeignKey(
+        "usuario.id"), nullable=False)
+    id_anuncio = db.Column(db.Integer, db.ForeignKey(
+        "anuncio.id"), nullable=False)
 
     usuario = db.relationship('Usuario', backref='favoritos')
     anuncio = db.relationship('Anuncio', backref='favoritos')
@@ -76,11 +83,14 @@ class Favorito(db.Model):
         self.id_usuario = id_usuario
         self.id_anuncio = id_anuncio
 
+
 class Pergunta(db.Model):
     __tablename__ = "pergunta"
     id = db.Column(db.Integer, primary_key=True)
-    id_anuncio = db.Column(db.Integer, db.ForeignKey("anuncio.id"), nullable=False)
-    id_usuario = db.Column(db.Integer, db.ForeignKey("usuario.id"), nullable=False)
+    id_anuncio = db.Column(db.Integer, db.ForeignKey(
+        "anuncio.id"), nullable=False)
+    id_usuario = db.Column(db.Integer, db.ForeignKey(
+        "usuario.id"), nullable=False)
     pergunta = db.Column(db.Text, nullable=False)
 
     anuncio = db.relationship('Anuncio', backref='perguntas')
@@ -91,10 +101,12 @@ class Pergunta(db.Model):
         self.id_usuario = id_usuario
         self.pergunta = pergunta
 
+
 class Compra(db.Model):
     __tablename__ = "compra"
     id = db.Column(db.Integer, primary_key=True)
-    id_usuario = db.Column(db.Integer, db.ForeignKey("usuario.id"), nullable=False)
+    id_usuario = db.Column(db.Integer, db.ForeignKey(
+        "usuario.id"), nullable=False)
     mt_pagamento = db.Column(db.String(50))
     frete = db.Column(db.Float)
     dt_hora = db.Column(db.DateTime, default=datetime.utcnow)
@@ -108,11 +120,14 @@ class Compra(db.Model):
         if dt_hora:
             self.dt_hora = dt_hora
 
+
 class CompraAnuncio(db.Model):
     __tablename__ = "compra_anuncio"
     id = db.Column(db.Integer, primary_key=True)
-    id_compra = db.Column(db.Integer, db.ForeignKey("compra.id"), nullable=False)
-    id_anuncio = db.Column(db.Integer, db.ForeignKey("anuncio.id"), nullable=False)
+    id_compra = db.Column(db.Integer, db.ForeignKey(
+        "compra.id"), nullable=False)
+    id_anuncio = db.Column(db.Integer, db.ForeignKey(
+        "anuncio.id"), nullable=False)
     quantidade = db.Column(db.Integer, nullable=False, default=1)
 
     compra = db.relationship('Compra', backref='itens')
@@ -123,39 +138,51 @@ class CompraAnuncio(db.Model):
         self.id_anuncio = id_anuncio
         self.quantidade = quantidade
 
+
+@app.errorhandler(404)
+def paginanaoencontrada(error):
+    return render_template('404.html')
+
+
 @app.route('/')
 def index():
-  return render_template("index.html")
+    return render_template("index.html")
+
 
 @app.route('/login')
 def login():
-  cookie = request.cookies.get("username")
-  if cookie:
-    return render_template("user.html", username=cookie)
-  else:
-    return render_template("login.html")
+    cookie = request.cookies.get("username")
+    if cookie:
+        return render_template("user.html", username=cookie)
+    else:
+        return render_template("login.html")
+
 
 @app.route("/categoria")
 def categoria():
     return render_template('categoria.html', categorias=Categoria.query.all(), titulo='Categoria')
 
+
 @app.route("/categoria/nova", methods=['POST'])
 def novacategoria():
-    categoria = Categoria(request.form.get('nome'), request.form.get('desc'))
+    categoria = Categoria(request.form.get('nome'), request.form.get('descricao'))
     db.session.add(categoria)
     db.session.commit()
     return redirect(url_for('categoria'))
 
+
 @app.route("/usuario")
 def usuario():
     return render_template('usuario.html', usuarios=Usuario.query.all(), titulo='Usuário')
+
 
 @app.route("/usuario/novo", methods=['POST'])
 def novousuario():
     dt_nascimento = None
     if request.form.get('dt_nascimento'):
         try:
-            dt_nascimento = datetime.strptime(request.form.get('dt_nascimento'), '%Y-%m-%d').date()
+            dt_nascimento = datetime.strptime(
+                request.form.get('dt_nascimento'), '%Y-%m-%d').date()
         except ValueError:
             pass
 
@@ -174,13 +201,63 @@ def novousuario():
     db.session.commit()
     return redirect(url_for('usuario'))
 
+
+@app.route("/usuario/detalhar/<int:id>")
+def buscarusuario(id):
+    usuario = Usuario.query.get(id)
+    if usuario:
+        return usuario.nome
+    return "Usuário não encontrado"
+
+
+@app.route("/usuario/editar/<int:id>", methods=['GET','POST'])
+def editarusuario(id):
+    usuario = Usuario.query.get(id)
+    if not usuario:
+        return redirect(url_for('usuario'))
+
+    if request.method == 'POST':
+        usuario.nome = request.form.get('nome')
+        usuario.email = request.form.get('email')
+        usuario.cpf = request.form.get('cpf')
+
+        if request.form.get('dt_nascimento'):
+            try:
+                usuario.dt_nascimento = datetime.strptime(
+                    request.form.get('dt_nascimento'), '%Y-%m-%d').date()
+            except ValueError:
+                pass
+
+        usuario.telefone = request.form.get('telefone')
+        usuario.rua = request.form.get('rua')
+        usuario.cidade = request.form.get('cidade')
+        usuario.bairro = request.form.get('bairro')
+        usuario.numero = request.form.get('numero')
+
+        db.session.add(usuario)
+        db.session.commit()
+        return redirect(url_for('usuario'))
+
+    return render_template('eusuario.html', usuario=usuario, titulo="Usuário")
+
+
+@app.route("/usuario/deletar/<int:id>")
+def deletarusuario(id):
+    usuario = Usuario.query.get(id)
+    if usuario:
+        db.session.delete(usuario)
+        db.session.commit()
+    return redirect(url_for('usuario'))
+
+
 @app.route("/anuncio")
 def anuncio():
     return render_template('anuncio.html',
-                         anuncios=Anuncio.query.all(),
-                         categorias=Categoria.query.all(),
-                         usuarios=Usuario.query.all(),
-                         titulo='Anúncio')
+                           anuncios=Anuncio.query.all(),
+                           categorias=Categoria.query.all(),
+                           usuarios=Usuario.query.all(),
+                           titulo='Anúncio')
+
 
 @app.route("/anuncio/novo", methods=['POST'])
 def novoanuncio():
@@ -193,6 +270,7 @@ def novoanuncio():
     db.session.commit()
     return redirect(url_for('anuncio'))
 
+
 @app.route("/pergunta")
 @app.route("/pergunta/<int:id_anuncio>")
 def pergunta(id_anuncio=None):
@@ -201,13 +279,10 @@ def pergunta(id_anuncio=None):
         anuncio = Anuncio.query.get_or_404(id_anuncio)
 
     return render_template('pergunta.html',
-                         anuncio=anuncio,
-                         anuncios=Anuncio.query.all(),
-                         usuarios=Usuario.query.all())
+                           anuncio=anuncio,
+                           anuncios=Anuncio.query.all(),
+                           usuarios=Usuario.query.all())
 
-@app.errorhandler(404)
-def paginanaoencontrada(error):
-    return render_template('404.html')
 
 @app.route("/pergunta/nova", methods=['POST'])
 def novapergunta():
@@ -221,10 +296,12 @@ def novapergunta():
 
     return redirect(url_for('pergunta', id_anuncio=request.form.get('id_anuncio')))
 
+
 @app.route("/favoritar/<int:id_anuncio>")
 def favoritar(id_anuncio):
     usuario_id = 1
-    favorito_existe = Favorito.query.filter_by(id_usuario=usuario_id, id_anuncio=id_anuncio).first()
+    favorito_existe = Favorito.query.filter_by(
+        id_usuario=usuario_id, id_anuncio=id_anuncio).first()
 
     if not favorito_existe:
         favorito = Favorito(id_usuario=usuario_id, id_anuncio=id_anuncio)
@@ -233,11 +310,13 @@ def favoritar(id_anuncio):
 
     return redirect(url_for('anuncio'))
 
+
 @app.route("/favoritos")
 def favoritos():
     usuario_id = 1
     favoritos = Favorito.query.filter_by(id_usuario=usuario_id).all()
     return render_template('favoritos.html', favoritos=favoritos)
+
 
 @app.route("/comprar/<int:id_anuncio>")
 def comprar(id_anuncio):
@@ -247,18 +326,31 @@ def comprar(id_anuncio):
     db.session.add(compra)
     db.session.flush()
 
-    compra_anuncio = CompraAnuncio(id_compra=compra.id, id_anuncio=id_anuncio, quantidade=1)
+    compra_anuncio = CompraAnuncio(
+        id_compra=compra.id, id_anuncio=id_anuncio, quantidade=1)
     db.session.add(compra_anuncio)
     db.session.commit()
 
     return f"<h4>Compra realizada com sucesso! ID: {compra.id}</h4>"
 
+
+@app.route("/relatorios/vendas")
+def relVendas():
+    return render_template('relVendas.html')
+
+
+@app.route("/relatorios/compras")
+def relCompras():
+    return render_template('relCompras.html')
+
+
 @app.route('/user')
 @app.route('/user/<username>')
 def user(username):
-  response = make_response(render_template("user.html", username=username))
-  response.set_cookie("username", username)
-  return response
+    response = make_response(render_template("user.html", username=username))
+    response.set_cookie("username", username)
+    return response
+
 
 if __name__ == 'beststore':
     print("Banco de dados inicializado!")
