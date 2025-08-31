@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp,container-queries"></script>
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-    <title>BESTEC - Cadastro de {{titulo}}</title>
+    <title>BESTEC - {{titulo}}</title>
   </head>
 
   <body class="relative bg-gray-900 flex flex-col items-center gap-4 m-6">
@@ -60,15 +60,14 @@
     </nav>
 
     <main class="w-full max-w-6xl">
-      <!-- Formulário de Cadastro -->
+      <!-- Formulário de Edição dos Dados -->
       <div class="bg-gray-800 rounded-lg p-6 mb-6 shadow">
         <h2 class="text-2xl font-bold text-gray-400 mb-6 text-center">
-          Cadastro de {{titulo}}
+          {{titulo}}
         </h2>
 
         <form
           method="post"
-          action="{{url_for('novousuario')}}"
           class="max-w-2xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-4"
         >
           <div class="md:col-span-2">
@@ -79,6 +78,7 @@
               type="text"
               id="nome"
               name="nome"
+              value="{{ usuario.nome if usuario.nome else '' }}"
               required
               class="outline-none w-full h-12 bg-gray-900 rounded-md border-2 border-gray-900 transition-colors duration-200 ease-in-out text-white px-5 focus:border-blue-600"
             />
@@ -92,6 +92,7 @@
               type="email"
               id="email"
               name="email"
+              value="{{ usuario.email if usuario.email else '' }}"
               required
               class="outline-none w-full h-12 bg-gray-900 rounded-md border-2 border-gray-900 transition-colors duration-200 ease-in-out text-white px-5 focus:border-blue-600"
             />
@@ -105,7 +106,7 @@
               type="text"
               id="cpf"
               name="cpf"
-              required
+              value="{{ usuario.cpf if usuario.cpf else '' }}"
               pattern="\d{3}\.\d{3}\.\d{3}-\d{2}"
               placeholder="000.000.000-00"
               class="outline-none w-full h-12 bg-gray-900 rounded-md border-2 border-gray-900 transition-colors duration-200 ease-in-out text-white px-5 focus:border-blue-600"
@@ -122,6 +123,7 @@
               type="date"
               id="dt_nascimento"
               name="dt_nascimento"
+              value="{{ usuario.dt_nascimento if usuario.dt_nascimento else '' }}"
               class="outline-none w-full h-12 bg-gray-900 rounded-md border-2 border-gray-900 transition-colors duration-200 ease-in-out text-white px-5 focus:border-blue-600"
             />
           </div>
@@ -134,6 +136,7 @@
               type="tel"
               id="telefone"
               name="telefone"
+              value="{{ usuario.telefone if usuario.telefone else '' }}"
               placeholder="(11) 99999-9999"
               class="outline-none w-full h-12 bg-gray-900 rounded-md border-2 border-gray-900 transition-colors duration-200 ease-in-out text-white px-5 focus:border-blue-600"
             />
@@ -147,6 +150,7 @@
               type="text"
               id="rua"
               name="rua"
+              value="{{ usuario.rua if usuario.rua else '' }}"
               class="outline-none w-full h-12 bg-gray-900 rounded-md border-2 border-gray-900 transition-colors duration-200 ease-in-out text-white px-5 focus:border-blue-600"
             />
           </div>
@@ -159,6 +163,7 @@
               type="text"
               id="numero"
               name="numero"
+              value="{{ usuario.numero if usuario.numero else '' }}"
               class="outline-none w-full h-12 bg-gray-900 rounded-md border-2 border-gray-900 transition-colors duration-200 ease-in-out text-white px-5 focus:border-blue-600"
             />
           </div>
@@ -171,6 +176,7 @@
               type="text"
               id="bairro"
               name="bairro"
+              value="{{ usuario.bairro if usuario.bairro else '' }}"
               class="outline-none w-full h-12 bg-gray-900 rounded-md border-2 border-gray-900 transition-colors duration-200 ease-in-out text-white px-5 focus:border-blue-600"
             />
           </div>
@@ -183,6 +189,20 @@
               type="text"
               id="cidade"
               name="cidade"
+              value="{{ usuario.cidade if usuario.cidade else '' }}"
+              class="outline-none w-full h-12 bg-gray-900 rounded-md border-2 border-gray-900 transition-colors duration-200 ease-in-out text-white px-5 focus:border-blue-600"
+            />
+          </div>
+
+          <div class="md:col-span-2">
+            <label for="senha" class="block text-gray-400 font-medium mb-2"
+              >Nova Senha (deixe em branco para não alterar)</label
+            >
+            <input
+              type="password"
+              id="senha"
+              name="senha"
+              placeholder="Digite uma nova senha se desejar alterá-la"
               class="outline-none w-full h-12 bg-gray-900 rounded-md border-2 border-gray-900 transition-colors duration-200 ease-in-out text-white px-5 focus:border-blue-600"
             />
           </div>
@@ -190,64 +210,12 @@
           <div class="md:col-span-2">
             <button
               type="submit"
-              class="w-full bg-blue-600/50 rounded-md h-12 border-0 text-gray-200 font-bold cursor-pointer transition-all duration-200 ease-in-out hover:bg-blue-600 hover:text-white"
+              class="w-full bg-blue-600/50 rounded-md h-12 border-0 text-gray-200 font-bold cursor-pointer transition-all duration-200 ease-in-out hover:bg-blue-600 hover:text-white flex items-center justify-center"
             >
-              Cadastrar
+              <i data-lucide="save" class="w-4 h-4 mr-2"></i>Salvar Alterações
             </button>
           </div>
         </form>
-      </div>
-
-      <!-- Lista de Usuários -->
-      <div class="bg-gray-800 rounded-lg p-6 shadow">
-        <h2 class="text-2xl font-bold text-gray-400 mb-6 text-center">
-          Lista de {{titulo}}
-        </h2>
-
-        <div class="overflow-x-auto">
-          <table class="w-full text-gray-400">
-            <thead>
-              <tr class="border-b border-gray-700">
-                <th class="text-left py-3 px-4 font-semibold">Nome</th>
-                <th class="text-left py-3 px-4 font-semibold">E-mail</th>
-                <th class="text-left py-3 px-4 font-semibold">CPF</th>
-                <th class="text-left py-3 px-4 font-semibold">Telefone</th>
-                <th class="text-left py-3 px-4 font-semibold">Cidade</th>
-                <th class="text-left py-3 px-4 font-semibold">Ações</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for usuario in usuarios %}
-              <tr
-                class="border-b border-gray-700 hover:bg-gray-700 transition-colors"
-              >
-                <td class="py-3 px-4">{{ usuario.nome }}</td>
-                <td class="py-3 px-4">{{ usuario.email }}</td>
-                <td class="py-3 px-4">{{ usuario.cpf }}</td>
-                <td class="py-3 px-4">{{ usuario.telefone }}</td>
-                <td class="py-3 px-4">{{ usuario.cidade }}</td>
-                <td class="py-3 px-4">
-                  <div class="flex gap-2">
-                    <a
-                      href="{{ url_for('editarusuario', id=usuario.id) }}"
-                      class="bg-blue-600/50 text-gray-200 px-3 py-1 rounded text-sm hover:bg-blue-600 transition-colors"
-                    >
-                      Editar
-                    </a>
-                    <a
-                      href="{{ url_for('deletarusuario', id=usuario.id) }}"
-                      class="bg-red-600/50 text-gray-200 px-3 py-1 rounded text-sm hover:bg-red-600 transition-colors"
-                      onclick="return confirm('Tem certeza que deseja deletar este usuário?')"
-                    >
-                      Deletar
-                    </a>
-                  </div>
-                </td>
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        </div>
       </div>
     </main>
 

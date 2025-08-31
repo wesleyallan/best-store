@@ -1,49 +1,94 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp,container-queries"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <title>BESTEC - Página Inicial</title>
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp,container-queries"></script>
-  <title>BESTEC - Página Inicial</title>
-</head>
-
-<body class="relative bg-gray-900 flex flex-col items-center gap-4 m-6">
-  <span class="block absolute w-full h-[2px] bg-gray-800 top-6 rounded-md"></span>
-  <nav class="bg-gray-800 w-fit rounded-3xl flex justify-center items-center overflow-hidden z-10">
-    <a href="{{url_for('index')}}"
-      class="font-medium text-gray-400 hover:text-gray-300 px-4 py-3 hover:bg-gray-600 rounded-md">Página Inicial</a>
-    <a href="{{url_for('categoria')}}"
-      class="font-medium text-gray-400 hover:text-gray-300 px-4 py-3 hover:bg-gray-600 rounded-md">Categorias</a>
-    <a href="{{url_for('usuario')}}"
-      class="font-medium text-gray-400 hover:text-gray-300 px-4 py-3 hover:bg-gray-600 rounded-md">Usuários</a>
-    <a href="{{url_for('anuncio')}}"
-      class="font-medium text-gray-400 hover:text-gray-300 px-4 py-3 hover:bg-gray-600 rounded-md">Anúncios</a>
-    <a href="{{url_for('favoritos')}}"
-      class="font-medium text-gray-400 hover:text-gray-300 px-4 py-3 hover:bg-gray-600 rounded-md">Favoritos</a>
-    <a href="{{url_for('login')}}"
-      class="font-medium text-gray-400 hover:text-gray-300 px-4 py-3 hover:bg-gray-600 rounded-md">Minha Conta</a>
-    <a href="{{url_for('logout')}}"
-      class="font-medium text-red-400 hover:text-red-300 px-4 py-3 hover:bg-red-600 rounded-md ml-2">
-      <i class="fas fa-sign-out-alt mr-1"></i>Sair
-    </a>
-  </nav>
-  <main class="p-6 bg-gray-800 w-full rounded-md overflow-hidden shadow">
-    <h1 class="font-bold text-center text-gray-400 mb-4">Bem vindo a BESTEC</h1>
-    <p class="text-center text-gray-400 mb-8">Seja bem vindo a melhor loja de compras e vendas de eletronicos do Brasil</p>
-
-    <!-- Links dos Relatórios -->
-    <div class="mt-8 flex justify-center gap-4">
-      <a href="{{url_for('relVendas')}}"
-        class="bg-blue-600/50 text-gray-200 px-6 py-3 rounded-md font-medium hover:bg-blue-600 transition-colors">
-        Relatório de Vendas
+  <body class="relative bg-gray-900 flex flex-col items-center gap-4 m-6">
+    <span
+      class="block absolute w-full h-[2px] bg-gray-800 top-6 rounded-md"
+    ></span>
+    <nav
+      class="bg-gray-800 w-fit rounded-3xl flex justify-center items-center overflow-hidden z-10"
+    >
+      <a
+        href="{{url_for('index')}}"
+        class="font-medium text-gray-400 hover:text-gray-300 px-4 py-3 hover:bg-gray-600 rounded-md"
+      >
+        <i data-lucide="home" class="w-4 h-4 inline mr-1"></i>Página Inicial</a
+      >
+      <a
+        href="{{url_for('anuncio')}}"
+        class="font-medium text-gray-400 hover:text-gray-300 px-4 py-3 hover:bg-gray-600 rounded-md"
+      >
+        <i data-lucide="megaphone" class="w-4 h-4 inline mr-1"></i>Anúncios</a
+      >
+      <a
+        href="{{url_for('favoritos')}}"
+        class="font-medium text-gray-400 hover:text-gray-300 px-4 py-3 hover:bg-gray-600 rounded-md"
+      >
+        <i data-lucide="heart" class="w-4 h-4 inline mr-1"></i>Favoritos</a
+      >
+      <a
+        href="{{url_for('categoria')}}"
+        class="font-medium text-gray-400 hover:text-gray-300 px-4 py-3 hover:bg-gray-600 rounded-md"
+      >
+        <i data-lucide="folder" class="w-4 h-4 inline mr-1"></i>Categorias</a
+      >
+      <a
+        href="{{url_for('usuario')}}"
+        class="font-medium text-gray-400 hover:text-gray-300 px-4 py-3 hover:bg-gray-600 rounded-md"
+      >
+        <i data-lucide="users" class="w-4 h-4 inline mr-1"></i>Usuários</a
+      >
+      <a
+        href="{{url_for('minha_conta')}}"
+        class="font-medium text-gray-400 hover:text-gray-300 px-4 py-3 hover:bg-gray-600 rounded-md"
+      >
+        <i data-lucide="user" class="w-4 h-4 inline mr-1"></i>Minha Conta</a
+      >
+      <a
+        href="{{url_for('logout')}}"
+        class="font-medium text-red-400 hover:text-red-300 px-4 py-3 hover:bg-red-600 rounded-md ml-2"
+      >
+        <i data-lucide="log-out" class="w-4 h-4 inline mr-1"></i>
       </a>
-      <a href="{{url_for('relCompras')}}"
-        class="bg-green-600/50 text-gray-200 px-6 py-3 rounded-md font-medium hover:bg-green-600 transition-colors">
-        Relatório de Compras
-      </a>
-    </div>
-  </main>
-</body>
+    </nav>
+    <main class="p-6 bg-gray-800 w-full rounded-md overflow-hidden shadow">
+      <h1 class="font-bold text-center text-gray-400 mb-4">
+        Bem vindo a BESTEC
+      </h1>
+      <p class="text-center text-gray-400 mb-8">
+        Seja bem vindo a melhor loja de compras e vendas de eletronicos do
+        Brasil
+      </p>
 
+      <!-- Links dos Relatórios -->
+      <div class="mt-8 flex justify-center gap-4">
+        <a
+          href="{{url_for('relVendas')}}"
+          class="bg-blue-600/50 text-gray-200 px-6 py-3 rounded-md font-medium hover:bg-blue-600 transition-colors flex items-center"
+        >
+          <i data-lucide="bar-chart-3" class="w-4 h-4 mr-2"></i>Relatório de
+          Vendas
+        </a>
+        <a
+          href="{{url_for('relCompras')}}"
+          class="bg-green-600/50 text-gray-200 px-6 py-3 rounded-md font-medium hover:bg-green-600 transition-colors flex items-center"
+        >
+          <i data-lucide="shopping-bag" class="w-4 h-4 mr-2"></i>Relatório de
+          Compras
+        </a>
+      </div>
+    </main>
+
+    <script>
+      // Inicializar ícones do Lucide
+      lucide.createIcons();
+    </script>
+  </body>
 </html>

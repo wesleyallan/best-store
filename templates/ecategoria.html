@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp,container-queries"></script>
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-    <title>BESTEC - Fazer Pergunta</title>
+    <title>BESTEC - Editar {{titulo}}</title>
   </head>
 
   <body class="relative bg-gray-900 flex flex-col items-center gap-4 m-6">
@@ -59,71 +59,41 @@
       </a>
     </nav>
 
-    <main class="w-full max-w-4xl">
-      <!-- Informações do Anúncio -->
-      {% if anuncio %}
-      <div class="bg-gray-800 rounded-lg p-6 mb-6 shadow">
-        <h2 class="text-2xl font-bold text-gray-400 mb-4">Anúncio</h2>
-        <div class="text-gray-300">
-          <p class="mb-2">
-            <strong>Categoria:</strong> {{ anuncio.categoria.nome if
-            anuncio.categoria else '-' }}
-          </p>
-          <p class="mb-2">
-            <strong>Anunciante:</strong> {{ anuncio.usuario.nome if
-            anuncio.usuario else '-' }}
-          </p>
-          <p><strong>Descrição:</strong> {{ anuncio.anunciocol }}</p>
-        </div>
-      </div>
-      {% endif %}
-
-      <!-- Formulário de Pergunta -->
+    <main class="w-full max-w-6xl">
+      <!-- Formulário de Edição -->
       <div class="bg-gray-800 rounded-lg p-6 mb-6 shadow">
         <h2 class="text-2xl font-bold text-gray-400 mb-6 text-center">
-          Fazer Pergunta
+          Editar {{titulo}}
         </h2>
 
-        <form
-          method="post"
-          action="{{url_for('novapergunta')}}"
-          class="max-w-2xl mx-auto"
-        >
-          {% if anuncio %}
-          <input type="hidden" name="id_anuncio" value="{{ anuncio.id }}" />
-          {% else %}
+        <form method="post" class="max-w-md mx-auto">
           <div class="mb-4">
-            <label for="id_anuncio" class="block text-gray-400 font-medium mb-2"
-              >Anúncio</label
+            <label for="nome" class="block text-gray-400 font-medium mb-2"
+              >Nome</label
             >
-            <select
-              id="id_anuncio"
-              name="id_anuncio"
+            <input
+              type="text"
+              id="nome"
+              name="nome"
+              value="{{ categoria.nome }}"
               required
               class="outline-none w-full h-12 bg-gray-900 rounded-md border-2 border-gray-900 transition-colors duration-200 ease-in-out text-white px-5 focus:border-blue-600"
-            >
-              <option value="">Selecione um anúncio</option>
-              {% for anuncio_item in anuncios %}
-              <option value="{{ anuncio_item.id }}">
-                {{ anuncio_item.anunciocol[:50] }}...
-              </option>
-              {% endfor %}
-            </select>
+            />
           </div>
-          {% endif %}
 
           <div class="mb-6">
-            <label for="pergunta" class="block text-gray-400 font-medium mb-2"
-              >Sua Pergunta</label
+            <label for="descricao" class="block text-gray-400 font-medium mb-2"
+              >Descrição</label
             >
             <textarea
-              id="pergunta"
-              name="pergunta"
+              id="descricao"
+              name="descricao"
               rows="4"
               required
-              placeholder="Digite sua pergunta sobre este anúncio..."
               class="outline-none w-full bg-gray-900 rounded-md border-2 border-gray-900 transition-colors duration-200 ease-in-out text-white px-5 py-3 focus:border-blue-600 resize-vertical"
-            ></textarea>
+            >
+{{ categoria.descricao }}</textarea
+            >
           </div>
 
           <div class="flex gap-4">
@@ -131,10 +101,10 @@
               type="submit"
               class="flex-1 bg-blue-600/50 rounded-md h-12 border-0 text-gray-200 font-bold cursor-pointer transition-all duration-200 ease-in-out hover:bg-blue-600 hover:text-white"
             >
-              Enviar Pergunta
+              Salvar
             </button>
             <a
-              href="{{url_for('anuncio')}}"
+              href="{{ url_for('categoria') }}"
               class="flex-1 bg-gray-600/50 rounded-md h-12 border-0 text-gray-200 font-bold cursor-pointer transition-all duration-200 ease-in-out hover:bg-gray-600 hover:text-white flex items-center justify-center"
             >
               Cancelar
@@ -142,32 +112,6 @@
           </div>
         </form>
       </div>
-
-      <!-- Lista de Perguntas do Anúncio -->
-      {% if anuncio and anuncio.perguntas %}
-      <div class="bg-gray-800 rounded-lg p-6 shadow">
-        <h2 class="text-2xl font-bold text-gray-400 mb-6 text-center">
-          Perguntas sobre este Anúncio
-        </h2>
-
-        <div class="space-y-4">
-          {% for pergunta in anuncio.perguntas %}
-          <div class="bg-gray-700 rounded-lg p-4">
-            <div class="flex justify-between items-start mb-2">
-              <span class="text-blue-400 font-semibold"
-                >{{ pergunta.usuario.nome if pergunta.usuario else 'Usuário'
-                }}</span
-              >
-              <span class="text-gray-500 text-sm"
-                >Pergunta #{{ pergunta.id }}</span
-              >
-            </div>
-            <p class="text-gray-300">{{ pergunta.pergunta }}</p>
-          </div>
-          {% endfor %}
-        </div>
-      </div>
-      {% endif %}
     </main>
 
     <script>

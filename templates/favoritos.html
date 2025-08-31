@@ -1,72 +1,124 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp,container-queries"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <title>BESTEC - Meus Favoritos</title>
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp,container-queries"></script>
-  <title>BESTEC - Meus Favoritos</title>
-</head>
+  <body class="relative bg-gray-900 flex flex-col items-center gap-4 m-6">
+    <span
+      class="block absolute w-full h-[2px] bg-gray-800 top-6 rounded-md"
+    ></span>
+    <nav
+      class="bg-gray-800 w-fit rounded-3xl flex justify-center items-center overflow-hidden z-10"
+    >
+      <a
+        href="{{url_for('index')}}"
+        class="font-medium text-gray-400 hover:text-gray-300 px-4 py-3 hover:bg-gray-600 rounded-md"
+      >
+        <i data-lucide="home" class="w-4 h-4 inline mr-1"></i>Página Inicial</a
+      >
+      <a
+        href="{{url_for('anuncio')}}"
+        class="font-medium text-gray-400 hover:text-gray-300 px-4 py-3 hover:bg-gray-600 rounded-md"
+      >
+        <i data-lucide="megaphone" class="w-4 h-4 inline mr-1"></i>Anúncios</a
+      >
+      <a
+        href="{{url_for('favoritos')}}"
+        class="font-medium text-gray-400 hover:text-gray-300 px-4 py-3 hover:bg-gray-600 rounded-md"
+      >
+        <i data-lucide="heart" class="w-4 h-4 inline mr-1"></i>Favoritos</a
+      >
+      <a
+        href="{{url_for('categoria')}}"
+        class="font-medium text-gray-400 hover:text-gray-300 px-4 py-3 hover:bg-gray-600 rounded-md"
+      >
+        <i data-lucide="folder" class="w-4 h-4 inline mr-1"></i>Categorias</a
+      >
+      <a
+        href="{{url_for('usuario')}}"
+        class="font-medium text-gray-400 hover:text-gray-300 px-4 py-3 hover:bg-gray-600 rounded-md"
+      >
+        <i data-lucide="users" class="w-4 h-4 inline mr-1"></i>Usuários</a
+      >
+      <a
+        href="{{url_for('minha_conta')}}"
+        class="font-medium text-gray-400 hover:text-gray-300 px-4 py-3 hover:bg-gray-600 rounded-md"
+      >
+        <i data-lucide="user" class="w-4 h-4 inline mr-1"></i>Minha Conta</a
+      >
+      <a
+        href="{{url_for('logout')}}"
+        class="font-medium text-red-400 hover:text-red-300 px-4 py-3 hover:bg-red-600 rounded-md ml-2"
+      >
+        <i data-lucide="log-out" class="w-4 h-4 inline mr-1"></i>
+      </a>
+    </nav>
 
-<body class="relative bg-gray-900 flex flex-col items-center gap-4 m-6">
-  <span class="block absolute w-full h-[2px] bg-gray-800 top-6 rounded-md"></span>
-  <nav class="bg-gray-800 w-fit rounded-3xl flex justify-center items-center overflow-hidden z-10">
-    <a href="{{url_for('index')}}"
-      class="font-medium text-gray-400 hover:text-gray-300 px-4 py-3 hover:bg-gray-600 rounded-md">Página Inicial</a>
-    <a href="{{url_for('categoria')}}"
-      class="font-medium text-gray-400 hover:text-gray-300 px-4 py-3 hover:bg-gray-600 rounded-md">Categorias</a>
-    <a href="{{url_for('usuario')}}"
-      class="font-medium text-gray-400 hover:text-gray-300 px-4 py-3 hover:bg-gray-600 rounded-md">Usuários</a>
-    <a href="{{url_for('anuncio')}}"
-      class="font-medium text-gray-400 hover:text-gray-300 px-4 py-3 hover:bg-gray-600 rounded-md">Anúncios</a>
-    <a href="{{url_for('favoritos')}}"
-      class="font-medium text-gray-400 hover:text-gray-300 px-4 py-3 hover:bg-gray-600 rounded-md">Favoritos</a>
-    <a href="{{url_for('login')}}"
-      class="font-medium text-gray-400 hover:text-gray-300 px-4 py-3 hover:bg-gray-600 rounded-md">Minha Conta</a>
-    <a href="{{url_for('logout')}}"
-      class="font-medium text-red-400 hover:text-red-300 px-4 py-3 hover:bg-red-600 rounded-md ml-2">
-      <i class="fas fa-sign-out-alt mr-1"></i>Sair
-    </a>
-  </nav>
+    <main class="w-full max-w-6xl">
+      <div class="bg-gray-800 rounded-lg p-6 shadow">
+        <h2 class="text-2xl font-bold text-gray-400 mb-6 text-center">
+          Meus Favoritos
+        </h2>
 
-  <main class="w-full max-w-6xl">
-    <div class="bg-gray-800 rounded-lg p-6 shadow">
-      <h2 class="text-2xl font-bold text-gray-400 mb-6 text-center">Meus Favoritos</h2>
+        {% if favoritos %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {% for favorito in favoritos %}
+          <div class="bg-gray-700 rounded-lg p-4">
+            <div class="mb-4">
+              <h3 class="text-lg font-semibold text-gray-300 mb-2">
+                {{ favorito.anuncio.categoria.nome if favorito.anuncio.categoria
+                else 'Sem categoria' }}
+              </h3>
+              <p class="text-gray-400 text-sm mb-2">
+                Por: {{ favorito.anuncio.usuario.nome if
+                favorito.anuncio.usuario else 'Usuário' }}
+              </p>
+              <p class="text-gray-300">
+                {{ favorito.anuncio.anunciocol[:100] }}{% if
+                favorito.anuncio.anunciocol|length > 100 %}...{% endif %}
+              </p>
+            </div>
 
-      {% if favoritos %}
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {% for favorito in favoritos %}
-        <div class="bg-gray-700 rounded-lg p-4">
-          <div class="mb-4">
-            <h3 class="text-lg font-semibold text-gray-300 mb-2">{{ favorito.anuncio.categoria.nome if favorito.anuncio.categoria else 'Sem categoria' }}</h3>
-            <p class="text-gray-400 text-sm mb-2">Por: {{ favorito.anuncio.usuario.nome if favorito.anuncio.usuario else 'Usuário' }}</p>
-            <p class="text-gray-300">{{ favorito.anuncio.anunciocol[:100] }}{% if favorito.anuncio.anunciocol|length > 100 %}...{% endif %}</p>
+            <div class="flex gap-2">
+              <a
+                href="{{url_for('pergunta', id_anuncio=favorito.anuncio.id)}}"
+                class="flex-1 bg-green-600/50 hover:bg-green-600 px-3 py-2 rounded text-sm text-center transition-colors flex items-center justify-center"
+              >
+                <i data-lucide="message-circle" class="w-4 h-4 mr-1"></i
+                >Perguntar
+              </a>
+              <a
+                href="{{url_for('comprar', id_anuncio=favorito.anuncio.id)}}"
+                class="flex-1 bg-blue-600/50 hover:bg-blue-600 px-3 py-2 rounded text-sm text-center transition-colors flex items-center justify-center"
+              >
+                <i data-lucide="shopping-cart" class="w-4 h-4 mr-1"></i>Comprar
+              </a>
+            </div>
           </div>
-
-          <div class="flex gap-2">
-            <a href="{{url_for('pergunta', id_anuncio=favorito.anuncio.id)}}"
-              class="flex-1 bg-green-600/50 hover:bg-green-600 px-3 py-2 rounded text-sm text-center transition-colors">
-              Perguntar
-            </a>
-            <a href="{{url_for('comprar', id_anuncio=favorito.anuncio.id)}}"
-              class="flex-1 bg-blue-600/50 hover:bg-blue-600 px-3 py-2 rounded text-sm text-center transition-colors">
-              Comprar
-            </a>
-          </div>
+          {% endfor %}
         </div>
-        {% endfor %}
+        {% else %}
+        <div class="text-center py-12">
+          <p class="text-gray-400 text-lg mb-4">Você ainda não tem favoritos</p>
+          <a
+            href="{{url_for('anuncio')}}"
+            class="bg-blue-600/50 hover:bg-blue-600 px-6 py-3 rounded text-gray-200 transition-colors"
+          >
+            Ver Anúncios
+          </a>
+        </div>
+        {% endif %}
       </div>
-      {% else %}
-      <div class="text-center py-12">
-        <p class="text-gray-400 text-lg mb-4">Você ainda não tem favoritos</p>
-        <a href="{{url_for('anuncio')}}"
-          class="bg-blue-600/50 hover:bg-blue-600 px-6 py-3 rounded text-gray-200 transition-colors">
-          Ver Anúncios
-        </a>
-      </div>
-      {% endif %}
-    </div>
-  </main>
-</body>
+    </main>
 
+    <script>
+      // Inicializar ícones do Lucide
+      lucide.createIcons();
+    </script>
+  </body>
 </html>

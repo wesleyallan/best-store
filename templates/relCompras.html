@@ -1,84 +1,132 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp,container-queries"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <title>BESTEC - Relatório de Compras</title>
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp,container-queries"></script>
-  <title>BESTEC - Relatório de Compras</title>
-</head>
+  <body class="relative bg-gray-900 flex flex-col items-center gap-4 m-6">
+    <span
+      class="block absolute w-full h-[2px] bg-gray-800 top-6 rounded-md"
+    ></span>
+    <nav
+      class="bg-gray-800 w-fit rounded-3xl flex justify-center items-center overflow-hidden z-10"
+    >
+      <a
+        href="{{url_for('index')}}"
+        class="font-medium text-gray-400 hover:text-gray-300 px-4 py-3 hover:bg-gray-600 rounded-md"
+      >
+        <i data-lucide="home" class="w-4 h-4 inline mr-1"></i>Página Inicial</a
+      >
+      <a
+        href="{{url_for('anuncio')}}"
+        class="font-medium text-gray-400 hover:text-gray-300 px-4 py-3 hover:bg-gray-600 rounded-md"
+      >
+        <i data-lucide="megaphone" class="w-4 h-4 inline mr-1"></i>Anúncios</a
+      >
+      <a
+        href="{{url_for('favoritos')}}"
+        class="font-medium text-gray-400 hover:text-gray-300 px-4 py-3 hover:bg-gray-600 rounded-md"
+      >
+        <i data-lucide="heart" class="w-4 h-4 inline mr-1"></i>Favoritos</a
+      >
+      <a
+        href="{{url_for('categoria')}}"
+        class="font-medium text-gray-400 hover:text-gray-300 px-4 py-3 hover:bg-gray-600 rounded-md"
+      >
+        <i data-lucide="folder" class="w-4 h-4 inline mr-1"></i>Categorias</a
+      >
+      <a
+        href="{{url_for('usuario')}}"
+        class="font-medium text-gray-400 hover:text-gray-300 px-4 py-3 hover:bg-gray-600 rounded-md"
+      >
+        <i data-lucide="users" class="w-4 h-4 inline mr-1"></i>Usuários</a
+      >
+      <a
+        href="{{url_for('minha_conta')}}"
+        class="font-medium text-gray-400 hover:text-gray-300 px-4 py-3 hover:bg-gray-600 rounded-md"
+      >
+        <i data-lucide="user" class="w-4 h-4 inline mr-1"></i>Minha Conta</a
+      >
+      <a
+        href="{{url_for('logout')}}"
+        class="font-medium text-red-400 hover:text-red-300 px-4 py-3 hover:bg-red-600 rounded-md ml-2"
+      >
+        <i data-lucide="log-out" class="w-4 h-4 inline mr-1"></i>
+      </a>
+    </nav>
 
-<body class="relative bg-gray-900 flex flex-col items-center gap-4 m-6">
-  <span class="block absolute w-full h-[2px] bg-gray-800 top-6 rounded-md"></span>
-  <nav class="bg-gray-800 w-fit rounded-3xl flex justify-center items-center overflow-hidden z-10">
-    <a href="{{url_for('index')}}"
-      class="font-medium text-gray-400 hover:text-gray-300 px-4 py-3 hover:bg-gray-600 rounded-md">Página Inicial</a>
-    <a href="{{url_for('categoria')}}"
-      class="font-medium text-gray-400 hover:text-gray-300 px-4 py-3 hover:bg-gray-600 rounded-md">Categorias</a>
-    <a href="{{url_for('usuario')}}"
-      class="font-medium text-gray-400 hover:text-gray-300 px-4 py-3 hover:bg-gray-600 rounded-md">Usuários</a>
-    <a href="{{url_for('anuncio')}}"
-      class="font-medium text-gray-400 hover:text-gray-300 px-4 py-3 hover:bg-gray-600 rounded-md">Anúncios</a>
-    <a href="{{url_for('favoritos')}}"
-      class="font-medium text-gray-400 hover:text-gray-300 px-4 py-3 hover:bg-gray-600 rounded-md">Favoritos</a>
-    <a href="{{url_for('login')}}"
-      class="font-medium text-gray-400 hover:text-gray-300 px-4 py-3 hover:bg-gray-600 rounded-md">Minha Conta</a>
-    <a href="{{url_for('logout')}}"
-      class="font-medium text-red-400 hover:text-red-300 px-4 py-3 hover:bg-red-600 rounded-md ml-2">
-      <i class="fas fa-sign-out-alt mr-1"></i>Sair
-    </a>
-  </nav>
+    <main class="w-full max-w-6xl">
+      <div class="bg-gray-800 rounded-lg p-6 shadow">
+        <h2 class="text-2xl font-bold text-gray-400 mb-6 text-center">
+          Relatório de Compras
+        </h2>
 
-  <main class="w-full max-w-6xl">
-    <div class="bg-gray-800 rounded-lg p-6 shadow">
-      <h2 class="text-2xl font-bold text-gray-400 mb-6 text-center">Relatório de Compras</h2>
-
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div class="bg-gray-900 rounded-lg p-4 text-center">
-          <h3 class="text-lg font-semibold text-orange-400 mb-2">Total de Compras</h3>
-          <p class="text-3xl font-bold text-white">R$ 0,00</p>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div class="bg-gray-900 rounded-lg p-4 text-center">
+            <h3 class="text-lg font-semibold text-orange-400 mb-2">
+              Total de Compras
+            </h3>
+            <p class="text-3xl font-bold text-white">R$ 0,00</p>
+          </div>
+          <div class="bg-gray-900 rounded-lg p-4 text-center">
+            <h3 class="text-lg font-semibold text-red-400 mb-2">
+              Compras Hoje
+            </h3>
+            <p class="text-3xl font-bold text-white">0</p>
+          </div>
+          <div class="bg-gray-900 rounded-lg p-4 text-center">
+            <h3 class="text-lg font-semibold text-yellow-400 mb-2">
+              Média Mensal
+            </h3>
+            <p class="text-3xl font-bold text-white">R$ 0,00</p>
+          </div>
         </div>
-        <div class="bg-gray-900 rounded-lg p-4 text-center">
-          <h3 class="text-lg font-semibold text-red-400 mb-2">Compras Hoje</h3>
-          <p class="text-3xl font-bold text-white">0</p>
+
+        <div class="bg-gray-900 rounded-lg p-4">
+          <h3 class="text-lg font-semibold text-gray-400 mb-4">
+            Histórico de Compras
+          </h3>
+          <div class="overflow-x-auto">
+            <table class="w-full text-gray-400">
+              <thead>
+                <tr class="border-b border-gray-700">
+                  <th class="text-left py-3 px-4 font-semibold">Data</th>
+                  <th class="text-left py-3 px-4 font-semibold">Produto</th>
+                  <th class="text-left py-3 px-4 font-semibold">Fornecedor</th>
+                  <th class="text-left py-3 px-4 font-semibold">Quantidade</th>
+                  <th class="text-left py-3 px-4 font-semibold">Valor</th>
+                  <th class="text-left py-3 px-4 font-semibold">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="border-b border-gray-700">
+                  <td class="py-3 px-4 text-gray-500" colspan="6">
+                    Nenhuma compra registrada
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
-        <div class="bg-gray-900 rounded-lg p-4 text-center">
-          <h3 class="text-lg font-semibold text-yellow-400 mb-2">Média Mensal</h3>
-          <p class="text-3xl font-bold text-white">R$ 0,00</p>
+
+        <div class="mt-6 flex justify-center">
+          <a
+            href="{{ url_for('index') }}"
+            class="bg-blue-600/50 rounded-md px-6 py-2 text-gray-200 font-bold transition-all duration-200 ease-in-out hover:bg-blue-600 hover:text-white"
+          >
+            Voltar ao Início
+          </a>
         </div>
       </div>
+    </main>
 
-      <div class="bg-gray-900 rounded-lg p-4">
-        <h3 class="text-lg font-semibold text-gray-400 mb-4">Histórico de Compras</h3>
-        <div class="overflow-x-auto">
-          <table class="w-full text-gray-400">
-            <thead>
-              <tr class="border-b border-gray-700">
-                <th class="text-left py-3 px-4 font-semibold">Data</th>
-                <th class="text-left py-3 px-4 font-semibold">Produto</th>
-                <th class="text-left py-3 px-4 font-semibold">Fornecedor</th>
-                <th class="text-left py-3 px-4 font-semibold">Quantidade</th>
-                <th class="text-left py-3 px-4 font-semibold">Valor</th>
-                <th class="text-left py-3 px-4 font-semibold">Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr class="border-b border-gray-700">
-                <td class="py-3 px-4 text-gray-500" colspan="6">Nenhuma compra registrada</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div class="mt-6 flex justify-center">
-        <a href="{{ url_for('index') }}"
-          class="bg-blue-600/50 rounded-md px-6 py-2 text-gray-200 font-bold transition-all duration-200 ease-in-out hover:bg-blue-600 hover:text-white">
-          Voltar ao Início
-        </a>
-      </div>
-    </div>
-  </main>
-</body>
-
+    <script>
+      // Inicializar ícones do Lucide
+      lucide.createIcons();
+    </script>
+  </body>
 </html>
