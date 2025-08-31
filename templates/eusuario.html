@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp,container-queries"></script>
-  <title>BESTEC - Cadastro de {{titulo}}</title>
+  <title>BESTEC - Editar {{titulo}}</title>
 </head>
 
 <body class="relative bg-gray-900 flex flex-col items-center gap-4 m-6">
@@ -25,117 +25,77 @@
       class="font-medium text-gray-400 hover:text-gray-300 px-4 py-3 hover:bg-gray-600 rounded-md">Minha Conta</a>
   </nav>
 
-  <main class="w-full max-w-6xl">
-    <!-- Formulário de Cadastro -->
-    <div class="bg-gray-800 rounded-lg p-6 mb-6 shadow">
-      <h2 class="text-2xl font-bold text-gray-400 mb-6 text-center">Cadastro de {{titulo}}</h2>
+  <main class="w-full max-w-4xl">
+    <!-- Formulário de Edição -->
+    <div class="bg-gray-800 rounded-lg p-6 shadow">
+      <h2 class="text-2xl font-bold text-gray-400 mb-6 text-center">Editar {{titulo}}</h2>
 
-      <form method="post" action="{{url_for('novousuario')}}" class="max-w-2xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-4">
+      <form method="post" class="max-w-2xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-4">
         <div class="md:col-span-2">
           <label for="nome" class="block text-gray-400 font-medium mb-2">Nome Completo</label>
-          <input type="text" id="nome" name="nome" required
+          <input type="text" id="nome" name="nome" value="{{ usuario.nome }}" required
             class="outline-none w-full h-12 bg-gray-900 rounded-md border-2 border-gray-900 transition-colors duration-200 ease-in-out text-white px-5 focus:border-blue-600">
         </div>
 
         <div>
           <label for="email" class="block text-gray-400 font-medium mb-2">E-mail</label>
-          <input type="email" id="email" name="email" required
+          <input type="email" id="email" name="email" value="{{ usuario.email }}" required
             class="outline-none w-full h-12 bg-gray-900 rounded-md border-2 border-gray-900 transition-colors duration-200 ease-in-out text-white px-5 focus:border-blue-600">
         </div>
 
         <div>
           <label for="cpf" class="block text-gray-400 font-medium mb-2">CPF</label>
-          <input type="text" id="cpf" name="cpf" required pattern="\d{3}\.\d{3}\.\d{3}-\d{2}" placeholder="000.000.000-00"
+          <input type="text" id="cpf" name="cpf" value="{{ usuario.cpf }}" pattern="\d{3}\.\d{3}\.\d{3}-\d{2}" placeholder="000.000.000-00"
             class="outline-none w-full h-12 bg-gray-900 rounded-md border-2 border-gray-900 transition-colors duration-200 ease-in-out text-white px-5 focus:border-blue-600">
         </div>
 
         <div>
           <label for="dt_nascimento" class="block text-gray-400 font-medium mb-2">Data de Nascimento</label>
-          <input type="date" id="dt_nascimento" name="dt_nascimento"
+          <input type="date" id="dt_nascimento" name="dt_nascimento" value="{{ usuario.dt_nascimento }}"
             class="outline-none w-full h-12 bg-gray-900 rounded-md border-2 border-gray-900 transition-colors duration-200 ease-in-out text-white px-5 focus:border-blue-600">
         </div>
 
         <div>
           <label for="telefone" class="block text-gray-400 font-medium mb-2">Telefone</label>
-          <input type="tel" id="telefone" name="telefone" placeholder="(11) 99999-9999"
+          <input type="tel" id="telefone" name="telefone" value="{{ usuario.telefone }}" placeholder="(11) 99999-9999"
             class="outline-none w-full h-12 bg-gray-900 rounded-md border-2 border-gray-900 transition-colors duration-200 ease-in-out text-white px-5 focus:border-blue-600">
         </div>
 
         <div>
           <label for="rua" class="block text-gray-400 font-medium mb-2">Rua</label>
-          <input type="text" id="rua" name="rua"
+          <input type="text" id="rua" name="rua" value="{{ usuario.rua }}"
             class="outline-none w-full h-12 bg-gray-900 rounded-md border-2 border-gray-900 transition-colors duration-200 ease-in-out text-white px-5 focus:border-blue-600">
         </div>
 
         <div>
           <label for="numero" class="block text-gray-400 font-medium mb-2">Número</label>
-          <input type="text" id="numero" name="numero"
+          <input type="text" id="numero" name="numero" value="{{ usuario.numero }}"
             class="outline-none w-full h-12 bg-gray-900 rounded-md border-2 border-gray-900 transition-colors duration-200 ease-in-out text-white px-5 focus:border-blue-600">
         </div>
 
         <div>
           <label for="bairro" class="block text-gray-400 font-medium mb-2">Bairro</label>
-          <input type="text" id="bairro" name="bairro"
+          <input type="text" id="bairro" name="bairro" value="{{ usuario.bairro }}"
             class="outline-none w-full h-12 bg-gray-900 rounded-md border-2 border-gray-900 transition-colors duration-200 ease-in-out text-white px-5 focus:border-blue-600">
         </div>
 
         <div>
           <label for="cidade" class="block text-gray-400 font-medium mb-2">Cidade</label>
-          <input type="text" id="cidade" name="cidade"
+          <input type="text" id="cidade" name="cidade" value="{{ usuario.cidade }}"
             class="outline-none w-full h-12 bg-gray-900 rounded-md border-2 border-gray-900 transition-colors duration-200 ease-in-out text-white px-5 focus:border-blue-600">
         </div>
 
-        <div class="md:col-span-2">
+        <div class="md:col-span-2 flex gap-4">
           <button type="submit"
-            class="w-full bg-blue-600/50 rounded-md h-12 border-0 text-gray-200 font-bold cursor-pointer transition-all duration-200 ease-in-out hover:bg-blue-600 hover:text-white">
-            Cadastrar
+            class="flex-1 bg-blue-600/50 rounded-md h-12 border-0 text-gray-200 font-bold cursor-pointer transition-all duration-200 ease-in-out hover:bg-blue-600 hover:text-white">
+            Salvar Alterações
           </button>
+          <a href="{{ url_for('usuario') }}"
+            class="flex-1 bg-gray-600/50 rounded-md h-12 border-0 text-gray-200 font-bold cursor-pointer transition-all duration-200 ease-in-out hover:bg-gray-600 hover:text-white flex items-center justify-center">
+            Cancelar
+          </a>
         </div>
       </form>
-    </div>
-
-    <!-- Lista de Usuários -->
-    <div class="bg-gray-800 rounded-lg p-6 shadow">
-      <h2 class="text-2xl font-bold text-gray-400 mb-6 text-center">Lista de {{titulo}}</h2>
-
-      <div class="overflow-x-auto">
-        <table class="w-full text-gray-400">
-          <thead>
-            <tr class="border-b border-gray-700">
-              <th class="text-left py-3 px-4 font-semibold">Nome</th>
-              <th class="text-left py-3 px-4 font-semibold">E-mail</th>
-              <th class="text-left py-3 px-4 font-semibold">CPF</th>
-              <th class="text-left py-3 px-4 font-semibold">Telefone</th>
-              <th class="text-left py-3 px-4 font-semibold">Cidade</th>
-              <th class="text-left py-3 px-4 font-semibold">Ações</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for usuario in usuarios %}
-            <tr class="border-b border-gray-700 hover:bg-gray-700 transition-colors">
-              <td class="py-3 px-4">{{ usuario.nome }}</td>
-              <td class="py-3 px-4">{{ usuario.email }}</td>
-              <td class="py-3 px-4">{{ usuario.cpf }}</td>
-              <td class="py-3 px-4">{{ usuario.telefone }}</td>
-              <td class="py-3 px-4">{{ usuario.cidade }}</td>
-              <td class="py-3 px-4">
-                <div class="flex gap-2">
-                  <a href="{{ url_for('editarusuario', id=usuario.id) }}"
-                    class="bg-blue-600/50 text-gray-200 px-3 py-1 rounded text-sm hover:bg-blue-600 transition-colors">
-                    Editar
-                  </a>
-                  <a href="{{ url_for('deletarusuario', id=usuario.id) }}"
-                    class="bg-red-600/50 text-gray-200 px-3 py-1 rounded text-sm hover:bg-red-600 transition-colors"
-                    onclick="return confirm('Tem certeza que deseja deletar este usuário?')">
-                    Deletar
-                  </a>
-                </div>
-              </td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
     </div>
   </main>
 </body>
