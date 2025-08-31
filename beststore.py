@@ -471,5 +471,5 @@ def user(username):
 
 
 if __name__ == 'beststore':
-    print("Banco de dados inicializado!")
     db.create_all()
+    app.run()
