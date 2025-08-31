@@ -163,8 +163,8 @@ def categoria():
     return render_template('categoria.html', categorias=Categoria.query.all(), titulo='Categoria')
 
 
-@app.route("/categoria/nova", methods=['POST'])
-def novacategoria():
+@app.route("/categoria/criar", methods=['POST'])
+def criarcategoria():
     categoria = Categoria(request.form.get('nome'), request.form.get('descricao'))
     db.session.add(categoria)
     db.session.commit()
@@ -259,8 +259,8 @@ def anuncio():
                            titulo='Anúncio')
 
 
-@app.route("/anuncio/novo", methods=['POST'])
-def novoanuncio():
+@app.route("/anuncio/criar", methods=['POST'])
+def criaranuncio():
     anuncio = Anuncio(
         anunciocol=request.form.get('anunciocol'),
         id_categoria=request.form.get('id_categoria'),
