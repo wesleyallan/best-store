@@ -31,59 +31,74 @@ O BestStore é uma aplicação web completa de e-commerce desenvolvida em Flask.
 ## ✨ Funcionalidades
 
 ### 👥 Gestão de Usuários
+
 - Cadastro e autenticação de usuários
 - Sistema de login/logout seguro
 - Perfis completos com dados pessoais e endereço
 - Gerenciamento de contas
 
 ### 🏷️ Sistema de Categorias
+
 - Criação e organização de categorias de produtos
-- Estrutura hierárquica para melhor organização
 
 ### 📢 Gestão de Anúncios
+
 - Criação e publicação de anúncios
 - Vinculação com categorias e usuários
-- Sistema de busca e filtragem
 
 ### ⭐ Sistema de Favoritos
+
 - Favoritar anúncios de interesse
 - Lista personalizada de favoritos por usuário
 
 ### 💬 Interação Social
+
 - Sistema de perguntas e respostas em anúncios
-- Comunicação entre compradores e vendedores
 
 ### 🛒 Sistema de Compras
+
 - Processamento de pedidos
-- Múltiplas formas de pagamento
-- Cálculo de frete
 - Histórico de compras
 
 ### 📊 Relatórios
+
 - Relatórios de vendas
 - Relatórios de compras
-- Dashboard de análise
 
 ## ⚙ Execução
+
+### 📋 Pré-requisitos
+
+Antes de começar, certifique-se de ter instalado:
+
+- [Python 3.8+](https://www.python.org/downloads/)
+- [Docker](https://www.docker.com/get-started)
+- [Git](https://git-scm.com/)
+
+### 🚀 Instalação
 
 Para executar o projeto localmente, siga os passos abaixo:
 
 1. Clone o repositório:
+
 ```bash
-git clone <url-do-repositorio>
+git clone https://github.com/wesleyallan/best-store
 ```
 
 2. Entre no diretório do projeto:
+
 ```bash
 cd best-store
 ```
 
 3. Crie um ambiente virtual Python:
+
 ```bash
 python -m venv venv
 ```
 
 4. Ative o ambiente virtual:
+
 ```bash
 # Linux/Mac
 source venv/bin/activate
@@ -93,20 +108,34 @@ venv\Scripts\activate
 ```
 
 5. Instale as dependências:
+
 ```bash
 pip install -r requirements.txt
 ```
 
-6. Configure as variáveis de ambiente:
+6. Configurar variável de ambiente `FLASK_APP`:
+
 ```bash
-# Crie um arquivo .env.development com:
-DATABASE_URL=mysql://usuario:senha@localhost/beststore
-SECRET_KEY=sua_chave_secreta_aqui
+# Linux/Mac
+export FLASK_APP=beststore
+
+# Windows (Command Prompt)
+set FLASK_APP=beststore
+
+# Windows (PowerShell)
+$env:FLASK_APP="beststore"
 ```
 
-7. Inicie a aplicação:
+7. Inicie o banco de dados:
+
 ```bash
-python beststore.py
+docker compose -p beststore-database -f infra/database/compose.yaml up -d
+```
+
+8. Inicie a aplicação:
+
+```bash
+flask run
 ```
 
 O projeto estará disponível em `http://localhost:5000`
@@ -119,6 +148,7 @@ Este projeto foi desenvolvido utilizando as seguintes tecnologias:
 - [Flask-SQLAlchemy](https://flask-sqlalchemy.palletsprojects.com/) - ORM para banco de dados
 - [Flask-Login](https://flask-login.readthedocs.io/) - Gerenciamento de sessões de usuário
 - [MySQL](https://www.mysql.com/) - Sistema de gerenciamento de banco de dados
+- [Docker](https://www.docker.com/) - Containerização do banco de dados
 - [Python-dotenv](https://github.com/theskumar/python-dotenv) - Gerenciamento de variáveis de ambiente
 - [Jinja2](https://jinja.palletsprojects.com/) - Engine de templates
 - [HTML/CSS](https://developer.mozilla.org/pt-BR/docs/Web/HTML) - Estrutura e estilo da interface
@@ -129,6 +159,7 @@ Ferramentas utilizadas no desenvolvimento:
 
 - [Visual Studio Code](https://code.visualstudio.com/) - Editor de código
 - [Git](https://git-scm.com/) - Sistema de controle de versão
+- [Docker Desktop](https://www.docker.com/products/docker-desktop) - Gerenciamento de containers
 - [MySQL Workbench](https://www.mysql.com/products/workbench/) - Administração do banco de dados
 
 ## 👤 Autor
